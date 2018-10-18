@@ -57,11 +57,12 @@
 #define TIME_OUT_SOUND_EFFECT "audio/timeOut.wav"
 #define TIME_TICK_SOUND_EFFECT "audio/timeTick.wav"
 
-// For scene transitions
+// For scene transitions and durations
 #define SCENE_TRANSITION_TIME 0.5
 #define SCENE_TRANSITION_TYPE TransitionCrossFade
 #define SCENE_TRANSITION(scene) SCENE_TRANSITION_TYPE::create(SCENE_TRANSITION_TIME, scene)
 #define GAME_OVER_SCENE_TRANSITION_DELAY 1.5 // delay after game is over and before going to game over screen
+#define SPLASH_SCREEN_DURATION 1.0
 
 
 // General
