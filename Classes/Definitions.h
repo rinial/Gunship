@@ -11,13 +11,11 @@
 // For UI
 #define MAIN_FONT "fonts/y2k.ttf"
 #define GREEN_COLOR Color3B(111, 185, 109) // 40, 210, 35
-#define GAME_SCORE_COLOR Color3B::WHITE
-#define GAME_SCORE_SHADOW_COLOR GREEN_COLOR
-#define GAME_SCORE_SHADOW_SIZE 0.04 // depends on size
-#define GAME_SCORE_FONT_SIZE (0.04 * V_SIZE.height)
+#define GAME_UI_COLOR Color3B::WHITE
+#define GAME_UI_SHADOW_COLOR GREEN_COLOR
+#define GAME_UI_FONT_SIZE (0.04 * V_SIZE.height)
+#define GAME_UI_SHADOW_SIZE (GAME_UI_FONT_SIZE * 0.04)
 // TODO move all 4 offsets to code?
-#define GAME_SCORE_X_OFFSET (0.07 * V_SIZE.width) // from left 
-#define GAME_SCORE_Y_OFFSET GAME_SCORE_X_OFFSET // from top
 #define GAME_TIME_X_OFFSET (0.07 * V_SIZE.width) // from right
 #define GAME_TIME_Y_OFFSET GAME_SCORE_X_OFFSET // from top
 #define GAME_OVER_TIME_TEXT_FONT_SIZE (0.035 * V_SIZE.height)
@@ -48,14 +46,21 @@
 // For sounds
 #define GAME_BACKGROUND_MUSIC "audio/bgGame.mp3"
 #define MENU_BACKGROUND_MUSIC "audio/bgMenu.wav"
+// TODO use
 #define CLICK_SOUND_EFFECT "audio/click.wav"
+// TODO use
 #define LASER_BOUNCE_SOUND_EFFECT "audio/laserBounce.wav"
+// TODO use
 #define LASER_HIT_SOUND_EFFECT "audio/laserHit.wav"
+// TODO use
 #define SCORE_TICK_SOUND_EFFECT "audio/scoreTick.wav"
+// TODO use
 #define SHOOT_NORMAL_SOUND_EFFECT "audio/shootNormal.wav"
+// TODO use
 #define SHOOT_POWERFUL_SOUND_EFFECT "audio/shootPowerful.wav"
 #define TIME_OUT_SOUND_EFFECT "audio/timeOut.wav"
 #define TIME_TICK_SOUND_EFFECT "audio/timeTick.wav"
+#define WIN_SOUND_EFFECT "audio/win.wav"
 
 // For scene transitions and durations
 #define SCENE_TRANSITION_TIME 0.5
@@ -64,16 +69,19 @@
 #define GAME_OVER_SCENE_TRANSITION_DELAY 1.5 // delay after game is over and before going to game over screen
 #define SPLASH_SCREEN_DURATION 1.0
 
-
-// General
-// TODO read from file
-#define GAME_TIME 30
-// TODO read from file
-#define NUM_OF_ASTEROIDS 10
+// Z levels
+#define Z_LEVEL_BACKGROUND	0
+#define Z_LEVEL_TARGET		1
+#define Z_LEVEL_PROJECTILE	2
+#define Z_LEVEL_GUN			3
+#define Z_LEVEL_GUNSHIP		4
+#define Z_LEVEL_UI			5
 
 // For gunship
 // TODO read from file
 #define PROJECTILE_SPEED 200
+#define SHOT_INTERVAL 0.8
+#define PROJECTILE_LIFE_TIME 10
 
 // For physics
 #define PHYSICS_UPDATE_INTERVAL (1.0 / 60)

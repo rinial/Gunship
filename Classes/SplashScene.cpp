@@ -30,6 +30,7 @@ bool SplashScene::init()
 	SimpleAudioEngine::getInstance()->preloadEffect(SHOOT_POWERFUL_SOUND_EFFECT);
 	SimpleAudioEngine::getInstance()->preloadEffect(TIME_OUT_SOUND_EFFECT);
 	SimpleAudioEngine::getInstance()->preloadEffect(TIME_TICK_SOUND_EFFECT);
+	SimpleAudioEngine::getInstance()->preloadEffect(WIN_SOUND_EFFECT);
 
 	// Background music
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(MENU_BACKGROUND_MUSIC, true);

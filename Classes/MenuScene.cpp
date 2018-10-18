@@ -1,5 +1,5 @@
 #include "MenuScene.h"
-// #include "GameScene.h"
+#include "GameScene.h"
 #include "Definitions.h"
 
 #include "audio/include/SimpleAudioEngine.h"
@@ -58,8 +58,8 @@ void MenuScene::menuPlayCallback(cocos2d::Ref* sender)
 	CCLOG("play");
 
 	SimpleAudioEngine::getInstance()->playEffect(CLICK_SOUND_EFFECT);
-	//const auto scene = GameScene::createScene();
-	//Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
+	const auto scene = GameScene::createScene();
+	Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
 }
 
 // Exits the game
