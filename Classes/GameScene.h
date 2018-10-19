@@ -57,7 +57,7 @@ private:
 	cocos2d::Label* scoreLabel_ = nullptr;
 
 	// Physics
-	// TODO std::unique_ptr<PhysWorld> sceneWorld_ = nullptr;
+	std::unique_ptr<class PhysWorld> sceneWorld_;
 	void physicsStep(float dT); // update physics
 
 	// Spaceship

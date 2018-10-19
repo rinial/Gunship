@@ -5,7 +5,7 @@
 // TODO uncomment
 // #include "Gunship.h"
 // #include "Asteroid.h"
-// #include "Physics/Physics.h"
+#include "Physics/Physics.h"
 #include "Definitions.h"
 #include <ctime>
 
@@ -34,6 +34,7 @@ bool GameScene::init()
 	// TODO read from file
 	maxGameTime_ = 20;
 	maxScore_ = 10; // number of targets
+	// TODO read projectile speed here too
 
 	// Background music
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(GAME_BACKGROUND_MUSIC, true);
@@ -70,7 +71,7 @@ bool GameScene::init()
 	this->addChild(gameTimeLabel_, Z_LEVEL_UI);
 
 	// Create physics world
-	// TODO sceneWorld_ = new PhysWorld();
+	sceneWorld_ = std::move(std::make_unique<PhysWorld>());
 
 	// Create edge around screen
 	// TODO set physical edge, like: 
@@ -241,5 +242,5 @@ void GameScene::incrementGameTime(float dT)
 // Update physics
 void GameScene::physicsStep(float dT)
 {
-	// TODO sceneWorld_->step(dT);
+	sceneWorld_->step(dT);
 }
