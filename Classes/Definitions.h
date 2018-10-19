@@ -15,15 +15,16 @@
 #define GAME_UI_SHADOW_COLOR GREEN_COLOR
 #define GAME_UI_FONT_SIZE (0.04 * V_SIZE.height)
 #define GAME_UI_SHADOW_SIZE (GAME_UI_FONT_SIZE * 0.04)
-// TODO move all 4 offsets to code?
-#define GAME_TIME_X_OFFSET (0.07 * V_SIZE.width) // from right
-#define GAME_TIME_Y_OFFSET GAME_SCORE_X_OFFSET // from top
-#define GAME_OVER_TIME_TEXT_FONT_SIZE (0.035 * V_SIZE.height)
-#define GAME_OVER_TIME_FONT_SIZE (0.08 * V_SIZE.height)
-#define GAME_OVER_TIME_MIN_DELAY 0.17
-#define GAME_OVER_TIME_MAX_DELAY 0.55
+#define GAME_OVER_NUMBER_TEXT_FONT_SIZE (0.04 * V_SIZE.height)
+#define GAME_OVER_NUMBER_TEXT_SHADOW_SIZE (GAME_OVER_NUMBER_TEXT_FONT_SIZE * 0.04)
+#define GAME_OVER_NUMBER_FONT_SIZE (0.08 * V_SIZE.height)
+#define GAME_OVER_NUMBER_SHADOW_SIZE (GAME_OVER_NUMBER_FONT_SIZE * 0.04)
+#define GAME_OVER_NUMBER_MIN_DELAY 0.17
+#define GAME_OVER_NUMBER_MAX_DELAY 0.55
+#define GAME_OVER_NUMBER_TICK_POWER 1.3
 
 // For memory
+#define BEST_SCORE_TAG "BestScore"
 #define BEST_TIME_TAG "BestTime"
 
 // For sprites
@@ -42,17 +43,17 @@
 #define GUN_SPRITE "sprites/Gun.png"
 #define PROJECTILE_SPRITE "sprites/Projectile.png"
 #define ASTEROID_SPRITE "sprites/Asteroid.png"
+#define WIN_SPRITE "sprites/WinLabel.png"
+#define LOSS_SPRITE "sprites/LossLabel.png"
 
 // For sounds
 #define GAME_BACKGROUND_MUSIC "audio/bgGame.mp3"
 #define MENU_BACKGROUND_MUSIC "audio/bgMenu.wav"
-// TODO use
 #define CLICK_SOUND_EFFECT "audio/click.wav"
 // TODO use
 #define LASER_BOUNCE_SOUND_EFFECT "audio/laserBounce.wav"
 // TODO use
 #define LASER_HIT_SOUND_EFFECT "audio/laserHit.wav"
-// TODO use
 #define SCORE_TICK_SOUND_EFFECT "audio/scoreTick.wav"
 // TODO use
 #define SHOOT_NORMAL_SOUND_EFFECT "audio/shootNormal.wav"
@@ -66,7 +67,7 @@
 #define SCENE_TRANSITION_TIME 0.5
 #define SCENE_TRANSITION_TYPE TransitionCrossFade
 #define SCENE_TRANSITION(scene) SCENE_TRANSITION_TYPE::create(SCENE_TRANSITION_TIME, scene)
-#define GAME_OVER_SCENE_TRANSITION_DELAY 1.5 // delay after game is over and before going to game over screen
+#define GAME_OVER_SCENE_TRANSITION_DELAY 0.8 // delay after game is over and before going to game over screen
 #define SPLASH_SCREEN_DURATION 1.0
 
 // Z levels

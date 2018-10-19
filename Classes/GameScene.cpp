@@ -1,7 +1,8 @@
 #include "GameScene.h"
+
 #include "MenuScene.h"
+#include "GameOverScene.h"
 // TODO uncomment
-// #include "GameOverScene.h"
 // #include "Gunship.h"
 // #include "Asteroid.h"
 // #include "Physics/Physics.h"
@@ -43,7 +44,7 @@ bool GameScene::init()
 	this->addChild(backSprite, Z_LEVEL_BACKGROUND);
 
 	// Set label for targets (score) 
-	scoreLabel_ = Label::createWithTTF(__String::createWithFormat("Targets: %d", maxScore_)->getCString(), MAIN_FONT, GAME_UI_FONT_SIZE);
+	scoreLabel_ = Label::createWithTTF(__String::createWithFormat("Score: %d / %d", 0, maxScore_)->getCString(), MAIN_FONT, GAME_UI_FONT_SIZE);
 	const auto scoreLeftOffset = 0.04 * V_SIZE.width;
 	const auto scoreTopOffset = scoreLeftOffset;
 	scoreLabel_->setPosition(
@@ -147,8 +148,8 @@ void GameScene::continueToGameOver(float dT)
 {
 	beforeLeavingScene(); // Stops schedules
 
-	// TODO const auto scene = GameOverScene::createScene(score_, maxScore_, gameTime_, maxGameTime_);
-	// TODO Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
+	const auto scene = GameOverScene::createScene(score_, maxScore_, gameTime_, maxGameTime_);
+	Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
 }
 
 // Go to main menu scene
@@ -225,7 +226,7 @@ void GameScene::incrementGameTime(float dT)
 //	++score_;
 //
 //	// Update label
-//	scoreLabel_->setString(__String::createWithFormat("Targets: %d", maxScore_ - score_)->getCString());
+//	scoreLabel_->setString(__String::createWithFormat("Score: %d / %d", score_, maxScore_)->getCString());
 //
 //	// Check for win
 //	if (score_ >= maxScore_) {
