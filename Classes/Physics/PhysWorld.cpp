@@ -125,5 +125,5 @@ void PhysWorld::onManipulatedBody(PhysBody* body)
 }
 
 // Needed to avoid problems with smart pointers
-PhysWorld::PhysWorld() {}
-PhysWorld::~PhysWorld() {}
+PhysWorld::PhysWorld() = default;
+PhysWorld::~PhysWorld() = default;

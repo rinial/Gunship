@@ -71,22 +71,15 @@ bool GameScene::init()
 	this->addChild(gameTimeLabel_, Z_LEVEL_UI);
 
 	// Create physics world
-	sceneWorld_ = std::move(std::make_unique<PhysWorld>());
+	sceneWorld_ = std::make_unique<PhysWorld>();
 
 	// Create edge around screen
-	// TODO set physical edge, like: 
-	//// Top boundary creation
-	//topEdgeBody_ = new CPRectangle(sceneWorld_,
-	//	Size(V_SIZE.width, BOUNDARY_WIDTH),
-	//	Vec2(CENTER_X, ORIGIN.y + V_SIZE.height + BOUNDARY_WIDTH / 2.0));
-	//topEdgeBody_->selfMask = COLLISION_BITMASK_OBSTACLE;
-	//topEdgeBody_->hitMask = COLLISION_BITMASK_SPACESHIP; // collide with spaceship
-	//// Bottom boundary creation
-	//botEdgeBody_ = new CPRectangle(sceneWorld_,
-	//	Size(V_SIZE.width, BOUNDARY_WIDTH),
-	//	Vec2(CENTER_X, ORIGIN.y - BOUNDARY_WIDTH / 2.0));
-	//botEdgeBody_->selfMask = COLLISION_BITMASK_OBSTACLE;
-	//botEdgeBody_->hitMask = COLLISION_BITMASK_SPACESHIP; // collide with spaceship
+	auto edgeBody = std::make_unique<PhysBody>(CENTER);
+	edgeBody->addCollider(std::make_unique<PhysBoxCollider>(Vec2(0, (V_SIZE.height + EDGE_WIDTH) / 2), Size(V_SIZE.width, EDGE_WIDTH), EDGE_BITMASKS));  // top
+	edgeBody->addCollider(std::make_unique<PhysBoxCollider>(Vec2(0, -(V_SIZE.height + EDGE_WIDTH) / 2), Size(V_SIZE.width, EDGE_WIDTH), EDGE_BITMASKS)); // bottom
+	edgeBody->addCollider(std::make_unique<PhysBoxCollider>(Vec2((V_SIZE.width + EDGE_WIDTH) / 2, 0), Size(EDGE_WIDTH, V_SIZE.height), EDGE_BITMASKS));  // right
+	edgeBody->addCollider(std::make_unique<PhysBoxCollider>(Vec2(-(V_SIZE.width + EDGE_WIDTH) / 2, 0), Size(EDGE_WIDTH, V_SIZE.height), EDGE_BITMASKS)); // left
+	sceneWorld_->addBody(std::move(edgeBody));
 
 	// Create all asteroids in random positions
 	for (unsigned int i = 0; i < maxScore_; ++i) {
@@ -115,6 +108,7 @@ bool GameScene::init()
 	auto mouseListener = EventListenerMouse::create();
 	mouseListener->onMouseDown = CC_CALLBACK_1(GameScene::onMouseDown, this);
 	mouseListener->onMouseUp = CC_CALLBACK_1(GameScene::onMouseUp, this);
+	mouseListener->onMouseMove = CC_CALLBACK_1(GameScene::onMouseMove, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
 	// Start listening to keyboard
@@ -132,7 +126,7 @@ bool GameScene::init()
 }
 
 // Needed to avoid problems with smart pointers
-GameScene::GameScene() {}
+GameScene::GameScene() = default;
 // Stop schedules upon destruction
 GameScene::~GameScene()
 {
@@ -181,6 +175,15 @@ void GameScene::onMouseUp(EventMouse* event)
 		return;
 
 	// TODO turn gunship's shooting mode off
+}
+void GameScene::onMouseMove(cocos2d::EventMouse* event)
+{
+	mouseLocation_ = event->getLocationInView();
+
+	if (!playing_)
+		return;
+
+	// TODO gunship.lookAt(mouseLocation);
 }
 
 // Handle keyboard events
@@ -242,7 +245,7 @@ void GameScene::incrementGameTime(float dT)
 //}
 
 // Update physics
-void GameScene::physicsStep(float dT)
+void GameScene::physicsStep(const float dT)
 {
 	sceneWorld_->step(dT);
 }

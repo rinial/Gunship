@@ -109,4 +109,4 @@ void PhysBody::informWorld()
 // Constructor
 PhysBody::PhysBody(const cocos2d::Vec2& pos, const float& mass, const float& bounciness) : position_(pos), mass_(mass), bounciness_(bounciness) {}
 // Important for cleaning memory using base class pointer
-PhysBody::~PhysBody() {}
+PhysBody::~PhysBody() = default;

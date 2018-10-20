@@ -36,6 +36,10 @@ private:
 	// Shoot while mouse is down
 	void onMouseDown(cocos2d::EventMouse* event);
 	void onMouseUp(cocos2d::EventMouse* event);
+	void onMouseMove(cocos2d::EventMouse* event);
+
+	// Position of the mouse
+	cocos2d::Vec2 mouseLocation_;
 
 	// Handle keyboard events
 	void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);

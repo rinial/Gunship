@@ -153,7 +153,6 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\MenuScene.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysBody.cpp" />
-    <ClCompile Include="..\Classes\Physics\PhysCollider.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysContactEvaluator.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysLeftRightMovement.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysMovement.cpp" />
