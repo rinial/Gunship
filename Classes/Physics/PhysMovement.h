@@ -5,9 +5,10 @@
 
 // Forward declarations
 class PhysBody;
+class PhysContact;
 
-// Basic class that represents some form of movement_ for PhysBody
-// Every movement has speed. Children control how it changes
+// Basic class that represents some form of movement of PhysBody
+// Every movement has speed. Children specify how it changes
 class PhysMovement
 {
 public:

@@ -11,7 +11,6 @@
 #include "PhysContact.h"
 #include "PhysContactEvaluator.h"
 #include "PhysMovement.h"
-// TODO #include "PhysConstLineMovement.h"
-// TODO #include "PhysSinusoidMovement.h"
+#include "PhysLeftRightMovement.h"
 
 #endif // __PHYSICS_H__

@@ -1,4 +1,5 @@
 #include "PhysBody.h"
+#include "PhysCollider.h"
 #include "PhysWorld.h"
 #include "PhysContact.h"
 #include "PhysMovement.h"
@@ -34,7 +35,13 @@ void PhysBody::removeCollider(PhysCollider* collider)
 	if (!collider)
 		return; // it's ok to 'remove' nullptr from the colliders_
 		// throw std::invalid_argument("collider can't be nullptr");
-	colliders_.erase(std::find_if(colliders_.begin(), colliders_.end(), [](auto col) { return collider == col; })); // TODO col.get() ?
+
+	// colliders_.erase(std::find_if(colliders_.begin(), colliders_.end(), [&collider](auto col) { return collider == col.get(); }));
+	for(auto it = colliders_.begin(); it != colliders_.end(); ++it)
+		if (it->get() == collider) {
+			colliders_.erase(it);
+			break;
+		}
 	informWorld();
 }
 
@@ -98,3 +105,8 @@ void PhysBody::informWorld()
 	if (world_)
 		world_->onManipulatedBody(this);
 }
+
+// Constructor
+PhysBody::PhysBody(const cocos2d::Vec2& pos, const float& mass, const float& bounciness) : position_(pos), mass_(mass), bounciness_(bounciness) {}
+// Important for cleaning memory using base class pointer
+PhysBody::~PhysBody() {}

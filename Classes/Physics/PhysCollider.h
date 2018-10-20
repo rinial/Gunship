@@ -16,7 +16,7 @@ public:
 	uint16_t overlapMask = 0; // what it can overlap (just an event)
 
 	// Important for cleaning memory using base class pointer
-	virtual ~PhysCollider() = default; 
+	virtual ~PhysCollider() = default;
 
 protected:
 	// Constructor is not public so that noone creates PhysCollider directly (only child classes)

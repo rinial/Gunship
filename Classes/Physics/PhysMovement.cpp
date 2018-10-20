@@ -1,6 +1,6 @@
+#include "PhysMovement.h"
 #include "PhysBody.h"
 #include "PhysContact.h"
-#include "PhysMovement.h"
 
 USING_NS_CC;
 
@@ -16,6 +16,8 @@ void PhysMovement::setBody(PhysBody* body)
 // Called from PhysBody on hits as it can affect movement
 void PhysMovement::onHit(const PhysContact& contact)
 {
+	// Bounce
+
 	// Don'd do anything if direction is unknown
 	if (contact.getDirection().isZero())
 		return;

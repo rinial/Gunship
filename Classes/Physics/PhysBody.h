@@ -14,7 +14,7 @@ class PhysContact;
 // 1) create base    |  auto body std::make_unique<PhysBody>(pos, mass, ...);
 // 2) add colliders  |  body->addCollider(std::move(std::make_unique<PhysCollider>(pos, ...)));
 // 3) add movement   |  body->addMovement(std::move(std::make_unique<PhysMovement>(...));
-// 4) add to world   |  world->addPhysBody(std::move(body));
+// 4) add to world   |  world->addBody(std::move(body));
 
 // Basic physics body with colliders, movement_ and other required information
 class PhysBody
@@ -72,10 +72,9 @@ private:
 
 public:
 	// Constructor
-	explicit PhysBody(const cocos2d::Vec2& pos = cocos2d::Vec2::ZERO, const float& mass = 1, const float& bounciness = 1) : position_(pos), mass_(mass), bounciness_(bounciness) {}
-
+	explicit PhysBody(const cocos2d::Vec2& pos = cocos2d::Vec2::ZERO, const float& mass = 1, const float& bounciness = 1);
 	// Important for cleaning memory using base class pointer
-	virtual ~PhysBody() = default;
+	virtual ~PhysBody();
 
 private:
 	// Used to inform world when this body has changed (and thus should be evaluated for contacts)

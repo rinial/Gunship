@@ -131,6 +131,8 @@ bool GameScene::init()
 	return true;
 }
 
+// Needed to avoid problems with smart pointers
+GameScene::GameScene() {}
 // Stop schedules upon destruction
 GameScene::~GameScene()
 {

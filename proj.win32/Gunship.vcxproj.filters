@@ -42,6 +42,12 @@
     <ClCompile Include="..\Classes\Physics\PhysMovement.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Physics\PhysLeftRightMovement.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Physics\PhysCollider.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -90,6 +96,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Physics\PhysWorld.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Physics\PhysLeftRightMovement.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

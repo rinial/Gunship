@@ -29,9 +29,11 @@ bool PhysContactEvaluator::intersects(PhysBody* a, PhysBody* b, PhysContact& con
 		for (auto& bCollider : bColliders)
 		{
 			auto direction = contact.direction_;
+			bool isHit;
 			// Some pair of colliders intersects
-			if (intersects(aCollider.get(), bCollider.get(), direction)) {
+			if (intersects(aCollider.get(), bCollider.get(), direction, isHit)) {
 				contact.setDirection(direction);
+				contact.isHit_ = isHit;
 				return true;
 			}
 		}
@@ -41,14 +43,19 @@ bool PhysContactEvaluator::intersects(PhysBody* a, PhysBody* b, PhysContact& con
 }
 // For colliders
 // direction is returned by reference if colliders do intersect
-bool PhysContactEvaluator::intersects(PhysCollider* a, PhysCollider* b, cocos2d::Vec2& direction)
+bool PhysContactEvaluator::intersects(PhysCollider* a, PhysCollider* b, cocos2d::Vec2& direction, bool& isHit)
 {
 	if (!a || !b)
 		throw std::invalid_argument("colliders can't be null pointers");
 
-	// If bit masks are not compatible
-	if (((a->hitMask & b->selfMask) == 0 && (a->overlapMask & b->selfMask) == 0) || 
-		((a->selfMask & b->hitMask) == 0 && (a->selfMask & b->overlapMask) == 0))
+	// If bit masks are hit-compatible
+	if ((a->hitMask & b->selfMask) != 0 && (a->selfMask & b->hitMask) != 0)
+		isHit = true;
+	// If bit masks are overlap-compatible
+	else if ((a->overlapMask & b->selfMask) != 0 && (a->selfMask & b->overlapMask) != 0)
+		isHit = false;
+	// If bit masks are incompatible
+	else
 		return false;
 
 	const auto aC = dynamic_cast<PhysCircleCollider*>(a);

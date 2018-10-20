@@ -21,12 +21,13 @@ public:
 private:
 	// For colliders
 	// direction is returned by reference if colliders do intersect
-	static bool intersects(PhysCollider* a, PhysCollider* b, cocos2d::Vec2& direction);
+	static bool intersects(PhysCollider* a, PhysCollider* b, cocos2d::Vec2& direction, bool& isHit);
 	static bool intersects(PhysCircleCollider* a, PhysCircleCollider* b, cocos2d::Vec2& direction);
 	static bool intersects(PhysBoxCollider* a, PhysBoxCollider* b, cocos2d::Vec2& direction);
 	static bool intersects(PhysCircleCollider* circle, PhysBoxCollider* rectangle, cocos2d::Vec2& direction);
 	static bool intersects(PhysBoxCollider* rectangle, PhysCircleCollider* circle, cocos2d::Vec2& direction);
 
+public:
 	PhysContactEvaluator() = delete; // We don't want instances of this class
 };
 

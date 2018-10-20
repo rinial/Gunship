@@ -15,6 +15,8 @@ public:
 	// static create()
 	CREATE_FUNC(GameScene);
 
+	// Needed to avoid problems with smart pointers
+	GameScene();
 	// Stop schedules upon destruction
 	~GameScene();
 

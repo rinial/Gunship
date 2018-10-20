@@ -153,7 +153,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\MenuScene.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysBody.cpp" />
+    <ClCompile Include="..\Classes\Physics\PhysCollider.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysContactEvaluator.cpp" />
+    <ClCompile Include="..\Classes\Physics\PhysLeftRightMovement.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysMovement.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysWorld.cpp" />
     <ClCompile Include="..\Classes\SplashScene.cpp" />
@@ -172,6 +174,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Physics\PhysContact.h" />
     <ClInclude Include="..\Classes\Physics\PhysContactEvaluator.h" />
     <ClInclude Include="..\Classes\Physics\Physics.h" />
+    <ClInclude Include="..\Classes\Physics\PhysLeftRightMovement.h" />
     <ClInclude Include="..\Classes\Physics\PhysMovement.h" />
     <ClInclude Include="..\Classes\Physics\PhysWorld.h" />
     <ClInclude Include="..\Classes\SplashScene.h" />

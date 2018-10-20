@@ -9,12 +9,12 @@ class PhysBody;
 // Represents special object that holds information about collision
 class PhysContact
 {
-	// We let contact evaluator access a_, b_ and direction_ directly
+	// We let contact evaluator access a_, b_, direction_ and isHit_ directly
 	friend class PhysContactEvaluator;
 
 public:
 	// For hashing
-	// We consider contacts equal if bodies are equal even if directions are not
+	// We consider contacts equal if bodies are equal even if directions and isHit_ are not
 	struct PhysContactHasher
 	{
 		std::size_t operator()(const PhysContact& contact) const
@@ -27,12 +27,15 @@ public:
 		return (a_ == other.a_ && b_ == other.b_) || (a_ == other.b_ && b_ == other.a_);
 	}
 
-	PhysContact(PhysBody* a, PhysBody* b, const cocos2d::Vec2& direction) {
+	// Constructors
+	PhysContact() = default; // Only used before sending into contact evaluator
+	PhysContact(PhysBody* a, PhysBody* b, const cocos2d::Vec2& direction, const bool isHit = false) {
 		if (!a || !b)
 			throw std::invalid_argument("bodies can't be null pointers");
 		a_ = a;
 		b_ = b;
 		setDirection(direction);
+		isHit_ = isHit;
 	}
 
 	// Gives access to collided objects and contact direction
@@ -62,10 +65,16 @@ public:
 		throw std::invalid_argument("this body is not part of contact");
 	}
 
-private:
+	// Returns true if contact is a hit, false means overlap
+	bool isHit() const { return isHit_; }
 
+private:
 	PhysBody* a_ = nullptr;
 	PhysBody* b_ = nullptr;
+
+	// True if contact is a hit
+	// False if contact is an overlap
+	bool isHit_ = false;
 
 	// Direction of normal to collision from a to b
 	cocos2d::Vec2 direction_;
