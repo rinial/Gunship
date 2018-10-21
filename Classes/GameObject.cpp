@@ -5,7 +5,7 @@ USING_NS_CC;
 
 // Update position and inform the world about it
 // Also set new node position to move sprites
-void GameObject::setPosition(const cocos2d::Vec2& pos)
+void GameObject::setPosition(const Vec2& pos)
 {
 	PhysBody::setPosition(pos);
 	rootNode_->setPosition(pos);
@@ -19,8 +19,16 @@ void GameObject::setActive(const bool active)
 	rootNode_->setVisible(active);
 }
 
+// Adds game object to scene
+void GameObject::addToScene(Scene* scene, const int zLevel)
+{
+	if (!scene)
+		throw std::invalid_argument("scene can't be nullptr");
+	scene->addChild(rootNode_, zLevel);
+}
+
 // Constructor
-GameObject::GameObject(const cocos2d::Vec2& pos, const float& mass, const float& bounciness) : PhysBody(pos, mass, bounciness)
+GameObject::GameObject(const Vec2& pos, const float& mass, const float& bounciness) : PhysBody(pos, mass, bounciness)
 {
 	rootNode_ = Node::create();
 	rootNode_->setPosition(pos);

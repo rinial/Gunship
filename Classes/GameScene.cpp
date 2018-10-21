@@ -2,8 +2,8 @@
 
 #include "MenuScene.h"
 #include "GameOverScene.h"
+#include "Gunship.h"
 // TODO uncomment
-// #include "Gunship.h"
 // #include "Asteroid.h"
 #include "Physics/Physics.h"
 #include "Definitions.h"
@@ -17,7 +17,7 @@ USING_NS_CC;
 // TODO move to spaceship?
 constexpr unsigned int maxNumProjectiles = PROJECTILE_LIFE_TIME / SHOT_INTERVAL + 1;
 
-cocos2d::Scene* GameScene::createScene()
+Scene* GameScene::createScene()
 {
 	return GameScene::create();
 }
@@ -83,17 +83,17 @@ bool GameScene::init()
 	sceneWorld_->addBody(std::move(edgeBody));
 
 	// Create a gunship in the center of the screen
-	// TODO auto gunship = std::make_unique<Gunship>(...);
-	// TODO this->addChild(gunship->getNode(), Z_LEVEL_GUNSHIP); // add cocos2d node to scene
-	// TODO gunship_ = gunship.get(); // save pointer for easy access
-	// TODO sceneWorld_->addBody(std::move(gunship); // PhysWorld controls memory
+	auto gunship = std::make_unique<Gunship>(CENTER);
+	gunship_ = gunship.get(); // save pointer for easy access
+	gunship->addToScene(this, Z_LEVEL_GUNSHIP); // add cocos2d node to scene
+	sceneWorld_->addBody(std::move(gunship)); // PhysWorld controls memory
 
 	// TODO move to gunship
 	// Add all possible projectiles to pool to avoid FPS drops on creating new ones
 	for (unsigned int i = 0; i < maxNumProjectiles; ++i) {
 		// TODO auto projectile = std::make_unique<Projectile>(...);
-		// TODO this->addChild(projectile.getNode(), Z_LEVEL_PROJECTILE); // add cocos2d node to scene
 		// TODO projectilesPool_.push(projectile.get()); // save pointer for easy access
+		// TODO projectile->addToScene(this, Z_LEVEL_PROJECTILE); // add cocos2d node to scene
 		// TODO sceneWorld_->addBody(std::move(projectile)); // PhysWorld controls memory
 	}
 
@@ -101,8 +101,8 @@ bool GameScene::init()
 	// TODO make sure they dont interfere with each other and leave space for gunship in center
 	for (unsigned int i = 0; i < maxScore_; ++i) {
 		// TODO auto asteroid = std::make_unique<Asteroid>(...);
-		// TODO this->addChild(asteroid.getNode(), Z_LEVEL_TARGET); // add cocos2d node to scene
 		// TODO asteroid->addEventListener(this); // start listening to target events
+		// TODO asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
 		// TODO sceneWorld_->addBody(std::move(asteroid));
 	}
 
@@ -119,10 +119,13 @@ bool GameScene::init()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
 	// Start incrementing time
-	this->schedule(schedule_selector(GameScene::incrementGameTime), 1, maxGameTime_ - 1, 0); // SCENE_TRANSITION_TIME);
+	this->schedule(schedule_selector(GameScene::incrementGameTime), 1, maxGameTime_ - 1, SCENE_TRANSITION_TIME);
 
 	// Start updating physics
-	this->schedule(schedule_selector(GameScene::physicsStep), PHYSICS_UPDATE_INTERVAL);
+	this->schedule(schedule_selector(GameScene::physicsStep), PHYSICS_UPDATE_INTERVAL, CC_REPEAT_FOREVER, SCENE_TRANSITION_TIME);
+
+	// Start updates
+	this->scheduleUpdate();
 
 	return true;
 }
@@ -181,11 +184,6 @@ void GameScene::onMouseUp(EventMouse* event)
 void GameScene::onMouseMove(cocos2d::EventMouse* event)
 {
 	mouseLocation_ = event->getLocationInView();
-
-	if (!playing_)
-		return;
-
-	// TODO gunship.lookAt(mouseLocation);
 }
 
 // Handle keyboard events
@@ -250,4 +248,13 @@ void GameScene::incrementGameTime(float dT)
 void GameScene::physicsStep(const float dT)
 {
 	sceneWorld_->step(dT);
+}
+
+// General update
+void GameScene::update(const float dT)
+{
+	if (!playing_)
+		return;
+
+	gunship_->lookAt(mouseLocation_);
 }

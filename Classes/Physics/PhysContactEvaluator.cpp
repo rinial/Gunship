@@ -31,7 +31,7 @@ bool PhysContactEvaluator::intersects(PhysBody* a, PhysBody* b, PhysContact& con
 			auto direction = contact.direction_;
 			bool isHit;
 			// Some pair of colliders intersects
-			if (intersects(aCollider.get(), bCollider.get(), direction, isHit)) {
+			if (intersects(a->getPosition(), aCollider.get(), b->getPosition(), bCollider.get(), direction, isHit)) {
 				contact.setDirection(direction);
 				contact.isHit_ = isHit;
 				return true;
@@ -43,7 +43,7 @@ bool PhysContactEvaluator::intersects(PhysBody* a, PhysBody* b, PhysContact& con
 }
 // For colliders
 // direction is returned by reference if colliders do intersect
-bool PhysContactEvaluator::intersects(PhysCollider* a, PhysCollider* b, cocos2d::Vec2& direction, bool& isHit)
+bool PhysContactEvaluator::intersects(const Vec2& posA, PhysCollider* a, const Vec2& posB, PhysCollider* b, Vec2& direction, bool& isHit)
 {
 	if (!a || !b)
 		throw std::invalid_argument("colliders can't be null pointers");
@@ -63,11 +63,11 @@ bool PhysContactEvaluator::intersects(PhysCollider* a, PhysCollider* b, cocos2d:
 	{
 		const auto bC = dynamic_cast<PhysCircleCollider*>(b);
 		if (bC) // b is circle
-			return intersects(aC, bC, direction); // circle, circle
+			return intersects(posA, aC, posB, bC, direction); // circle, circle
 
 		const auto bR = dynamic_cast<PhysBoxCollider*>(b);
 		if (bR) // b is rectangle
-			return intersects(aC, bR, direction); // circle, box
+			return intersects(posA, aC, posB, bR, direction); // circle, box
 
 		// b is unknown
 		return false;
@@ -78,11 +78,11 @@ bool PhysContactEvaluator::intersects(PhysCollider* a, PhysCollider* b, cocos2d:
 	{
 		const auto bC = dynamic_cast<PhysCircleCollider*>(b);
 		if (bC) // b is circle
-			return intersects(aR, bC, direction); // box, circle
+			return intersects(posA, aR, posB, bC, direction); // box, circle
 
 		const auto bR = dynamic_cast<PhysBoxCollider*>(b);
 		if (bR) // b is rectangle
-			return intersects(aR, bR, direction); // box, box
+			return intersects(posA, aR, posB, bR, direction); // box, box
 
 		// b is unknown
 		return false;
@@ -93,24 +93,30 @@ bool PhysContactEvaluator::intersects(PhysCollider* a, PhysCollider* b, cocos2d:
 }
 
 // circle, circle
-bool PhysContactEvaluator::intersects(PhysCircleCollider* a, PhysCircleCollider* b, cocos2d::Vec2& direction)
+bool PhysContactEvaluator::intersects(const Vec2& posA, PhysCircleCollider* a, const Vec2& posB, PhysCircleCollider* b, cocos2d::Vec2& direction)
 {
+	const auto positionA = posA + a->getPosition();
+	const auto positionB = posB + b->getPosition();
+
 	// distance(A, B) <= sum(radius A, radius B)
-	const auto temp = a->getPosition().getDistance(b->getPosition()) <= a->getRadius() + b->getRadius();
-	direction = (b->getPosition() - a->getPosition()).getNormalized();
+	const auto temp = positionA.getDistance(positionB) <= a->getRadius() + b->getRadius();
+	direction = (positionB - positionA).getNormalized();
 	return temp;
 }
 
 // box, box
-bool PhysContactEvaluator::intersects(PhysBoxCollider* a, PhysBoxCollider* b, cocos2d::Vec2& direction)
+bool PhysContactEvaluator::intersects(const Vec2& posA, PhysBoxCollider* a, const Vec2& posB, PhysBoxCollider* b, cocos2d::Vec2& direction)
 {
+	const auto positionA = posA + a->getPosition();
+	const auto positionB = posB + b->getPosition();
+
 	// For the sake of simplicity we only check AABB case (Axis Aligned Bounding Box)
 	// That is enough for this game
 
-	const auto& aX = a->getPosition().x;
-	const auto& aY = a->getPosition().y;
-	const auto& bX = b->getPosition().x;
-	const auto& bY = b->getPosition().y;
+	const auto& aX = positionA.x;
+	const auto& aY = positionA.y;
+	const auto& bX = positionB.x;
+	const auto& bY = positionB.y;
 
 	const auto xDist = std::abs(aX - bX);
 	const auto yDist = std::abs(aY - bY);
@@ -135,16 +141,19 @@ bool PhysContactEvaluator::intersects(PhysBoxCollider* a, PhysBoxCollider* b, co
 }
 
 // circle, box
-bool PhysContactEvaluator::intersects(PhysCircleCollider* circle, PhysBoxCollider* rectangle, cocos2d::Vec2& direction)
+bool PhysContactEvaluator::intersects(const Vec2& posCircle, PhysCircleCollider* circle, const Vec2& posRectangle, PhysBoxCollider* rectangle, cocos2d::Vec2& direction)
 {
+	const auto positionC = posCircle + circle->getPosition();
+	const auto positionR = posRectangle + rectangle->getPosition();
+
 	// For the sake of simplicity we only check AABB case (Axis Aligned Bounding Box), imagining a box around circle
 	// We still also check special cases at the corners
 	// That is enough for this game
 
-	const auto& cX = circle->getPosition().x;
-	const auto& cY = circle->getPosition().y;
-	const auto& rX = rectangle->getPosition().x;
-	const auto& rY = rectangle->getPosition().y;
+	const auto& cX = positionC.x;
+	const auto& cY = positionC.y;
+	const auto& rX = positionR.x;
+	const auto& rY = positionR.y;
 
 	const auto& radius = circle->getRadius();
 	const auto hWidth = rectangle->getSize().width / 2;
@@ -166,7 +175,7 @@ bool PhysContactEvaluator::intersects(PhysCircleCollider* circle, PhysBoxCollide
 	// Check corners for special non-intersect cases
 	for (auto i1 : { -1, 1 }) for (auto i2 : { -1, 1 })
 		if (hWidth < i1 * (cX - rX) && hHeight < i2 * (cY - rY) &&
-			circle->getPosition().distance(Vec2(rX + i1 * hWidth, rY + i2 * hHeight)) > radius)
+			positionC.distance(Vec2(rX + i1 * hWidth, rY + i2 * hHeight)) > radius)
 			return false;
 
 	// Now there is definitely intersection
@@ -195,10 +204,10 @@ bool PhysContactEvaluator::intersects(PhysCircleCollider* circle, PhysBoxCollide
 }
 
 // box, circle
-bool PhysContactEvaluator::intersects(PhysBoxCollider* rectangle, PhysCircleCollider* circle, cocos2d::Vec2& direction)
+bool PhysContactEvaluator::intersects(const Vec2& posRectangle, PhysBoxCollider* rectangle, const Vec2& posCircle, PhysCircleCollider* circle, cocos2d::Vec2& direction)
 {
 	// it's symmetric
-	const auto temp = intersects(circle, rectangle, direction);
+	const auto temp = intersects(posCircle, circle, posRectangle, rectangle, direction);
 	direction = -direction; // we have to invert it
 	return temp; 
 }

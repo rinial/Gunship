@@ -66,6 +66,9 @@ private:
 	std::unique_ptr<class PhysWorld> sceneWorld_;
 	void physicsStep(float dT); // update physics
 
+	// General update
+	virtual void update(float dT) override;
+
 	// Spaceship
 	// Just a pointer, PhysWorld handles its memory
 	class Gunship* gunship_ = nullptr;

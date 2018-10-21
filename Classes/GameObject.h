@@ -16,6 +16,9 @@ public:
 	// Also changes visibility
 	virtual void setActive(bool active) override;
 
+	// Adds game object to scene
+	virtual void addToScene(cocos2d::Scene* scene, int zLevel = 0);
+
 	// Constructor
 	explicit GameObject(const cocos2d::Vec2& pos = cocos2d::Vec2::ZERO, const float& mass = 1, const float& bounciness = 1);
 	// Important for cleaning memory using base class pointer
@@ -24,6 +27,8 @@ public:
 protected:
 	// Root of the object
 	cocos2d::Node* rootNode_;
+	// Scene
+	cocos2d::Scene* sceneNode_ = nullptr;
 };
 
 #endif // __GAME_OBJECT_H__
