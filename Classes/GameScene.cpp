@@ -14,6 +14,7 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 
+// TODO move to spaceship?
 constexpr unsigned int maxNumProjectiles = PROJECTILE_LIFE_TIME / SHOT_INTERVAL + 1;
 
 cocos2d::Scene* GameScene::createScene()
@@ -34,7 +35,7 @@ bool GameScene::init()
 	// TODO read from file
 	maxGameTime_ = 20;
 	maxScore_ = 10; // number of targets
-	// TODO read projectile speed here too
+	unsigned int projectileSpeed = 100; // TODO use it
 
 	// Background music
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(GAME_BACKGROUND_MUSIC, true);
@@ -81,28 +82,29 @@ bool GameScene::init()
 	edgeBody->addCollider(std::make_unique<PhysBoxCollider>(Vec2(-(V_SIZE.width + EDGE_WIDTH) / 2, 0), Size(EDGE_WIDTH, V_SIZE.height), EDGE_BITMASKS)); // left
 	sceneWorld_->addBody(std::move(edgeBody));
 
-	// Create all asteroids in random positions
-	for (unsigned int i = 0; i < maxScore_; ++i) {
-		// TODO Asteroid* asteroid = ...;
-		// TODO as with gunship
-		// TODO this->addChild(asteroid->getNode());
-		// TODO asteroid->addEventListener(this);
-	}
-	
+	// Create a gunship in the center of the screen
+	// TODO auto gunship = std::make_unique<Gunship>(...);
+	// TODO this->addChild(gunship->getNode(), Z_LEVEL_GUNSHIP); // add cocos2d node to scene
+	// TODO gunship_ = gunship.get(); // save pointer for easy access
+	// TODO sceneWorld_->addBody(std::move(gunship); // PhysWorld controls memory
+
 	// TODO move to gunship
 	// Add all possible projectiles to pool to avoid FPS drops on creating new ones
 	for (unsigned int i = 0; i < maxNumProjectiles; ++i) {
-		// TODO Projectile* projectile = ...;
-		// TODO as with gunship
-		// TODO this->addChild(projectile->getNode());
-		// TODO projectilesPool_.push(projectile);
+		// TODO auto projectile = std::make_unique<Projectile>(...);
+		// TODO this->addChild(projectile.getNode(), Z_LEVEL_PROJECTILE); // add cocos2d node to scene
+		// TODO projectilesPool_.push(projectile.get()); // save pointer for easy access
+		// TODO sceneWorld_->addBody(std::move(projectile)); // PhysWorld controls memory
 	}
 
-	// Create a gunship
-	// TODO gunship_ = ...;
-	// TODO sceneWorld_->addPhysObject(gunship_); OR
-	// TODO gunship_->initPhysics(sceneWorld_)
-	// TODO this->addChild(gunship->getNode());
+	// Create all asteroids in random positions
+	// TODO make sure they dont interfere with each other and leave space for gunship in center
+	for (unsigned int i = 0; i < maxScore_; ++i) {
+		// TODO auto asteroid = std::make_unique<Asteroid>(...);
+		// TODO this->addChild(asteroid.getNode(), Z_LEVEL_TARGET); // add cocos2d node to scene
+		// TODO asteroid->addEventListener(this); // start listening to target events
+		// TODO sceneWorld_->addBody(std::move(asteroid));
+	}
 
 	// Start listening to mouse
 	auto mouseListener = EventListenerMouse::create();

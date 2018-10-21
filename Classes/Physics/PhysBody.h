@@ -27,7 +27,7 @@ public:
 	PhysWorld* getWorld() const { return world_; }
 
 	// Update position and inform the world about it
-	void setPosition(const cocos2d::Vec2& pos);
+	virtual void setPosition(const cocos2d::Vec2& pos);
 	// Return position
 	const cocos2d::Vec2& getPosition() const { return position_; }
 
@@ -53,7 +53,7 @@ public:
 	bool isKinematic() const { return movement_ == nullptr; }
 
 	// Set activeness and inform the world
-	void setActive(bool active);
+	virtual void setActive(bool active);
 	// True if object is active (should step and can be hit/overlapped)
 	bool isActive() const { return isActive_; }
 

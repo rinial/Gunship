@@ -8,7 +8,7 @@
 class PhysBody;
 
 // Represents movement with constant speed magnitude but changing direction
-class PhysLeftRightMovement : PhysMovement
+class PhysLeftRightMovement : public PhysMovement
 {
 public:
 	// Evaluates body movement over a period of time
