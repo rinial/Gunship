@@ -3,6 +3,7 @@
 #include "MenuScene.h"
 #include "GameOverScene.h"
 #include "Gunship.h"
+#include "Target.h"
 // TODO uncomment
 // #include "Asteroid.h"
 #include "Physics/Physics.h"
@@ -228,26 +229,29 @@ void GameScene::incrementGameTime(float dT)
 }
 
 // Handle target destruction
-// TODO uncomment
-//void GameScene::onTargetDestroyed(Target* sender)
-//{
-//	if (!playing_)
-//		return;
-//
-//	++score_;
-//
-//	// Update label
-//	scoreLabel_->setString(__String::createWithFormat("Score: %d / %d", score_, maxScore_)->getCString());
-//
-//	// Check for win
-//	if (score_ >= maxScore_) {
-//		// Play sound
-//		SimpleAudioEngine::getInstance()->playEffect(WIN_SOUND_EFFECT);
-//
-//		playing_ = false;
-//		this->scheduleOnce(schedule_selector(GameScene::continueToGameOver), GAME_OVER_SCENE_TRANSITION_DELAY);
-//	}
-//}
+void GameScene::onGameObjectBeginDestroy(GameObject* sender)
+{
+	if (!playing_)
+		return;
+
+	const auto target = dynamic_cast<Target*>(sender);
+	if (!target)
+		return;
+
+	++score_;
+
+	// Update label
+	scoreLabel_->setString(__String::createWithFormat("Score: %d / %d", score_, maxScore_)->getCString());
+
+	// Check for win
+	if (score_ >= maxScore_) {
+		// Play sound
+		SimpleAudioEngine::getInstance()->playEffect(WIN_SOUND_EFFECT);
+
+		playing_ = false;
+		this->scheduleOnce(schedule_selector(GameScene::continueToGameOver), GAME_OVER_SCENE_TRANSITION_DELAY);
+	}
+}
 
 // Update physics
 void GameScene::physicsStep(const float dT)

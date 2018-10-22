@@ -1,7 +1,22 @@
 #include "GameObject.h"
+#include "GameObjectEventListener.h"
 #include "Physics/Physics.h"
 
 USING_NS_CC;
+
+// Add/remove listeners
+void GameObject::addListener(GameObjectEventListener* listener)
+{
+	if (!listener)
+		return;
+	listeners_.insert(listener);
+}
+void GameObject::removeListener(GameObjectEventListener* listener)
+{
+	if (!listener)
+		return;
+	listeners_.erase(listener);
+}
 
 // Update position and inform the world about it
 // Also set new node position to move sprites
@@ -30,6 +45,10 @@ void GameObject::addToScene(Scene* scene, const int zLevel)
 // Destroy this object
 void GameObject::destroy()
 {
+	// Send event
+	for (auto listener : listeners_)
+		listener->onGameObjectBeginDestroy(this);
+
 	onDestroy();
 	rootNode_->removeFromParentAndCleanup(true);
 	getWorld()->removeBody(this);

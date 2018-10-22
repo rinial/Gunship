@@ -1,11 +1,11 @@
 #ifndef __GAME_SCENE_H__
 #define __GAME_SCENE_H__
 
-// #include "TargetEventsListener.h" // TODO uncomment
+#include "GameObjectEventListener.h"
 #include "cocos2d.h"
 
 // Game scene where game happens
-class GameScene : public cocos2d::Scene // TODO , public TargetEventsListener
+class GameScene : public cocos2d::Scene, public GameObjectEventListener
 {
 public:
 	static cocos2d::Scene* createScene();
@@ -61,7 +61,7 @@ private:
 	cocos2d::Label* gameTimeLabel_ = nullptr;
 
 	// Handle target destruction
-	// TODO virtual void onTargetDestroyed(class Target* sender) override;
+	virtual void onGameObjectBeginDestroy(class GameObject* sender) override;
 	// This is where score is shown
 	cocos2d::Label* scoreLabel_ = nullptr;
 

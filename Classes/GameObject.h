@@ -3,11 +3,19 @@
 
 #include "Physics/PhysBody.h"
 #include "cocos2d.h"
+#include <unordered_set>
+
+// Forward declarations
+class GameObjectEventListener;
 
 // Basic game object that has (is) a physics body and cointains a scene node to attach sprites to
 class GameObject : public PhysBody
 {
 public:
+	// Add/remove listeners
+	void addListener(GameObjectEventListener* listener);
+	void removeListener(GameObjectEventListener* listener);
+
 	// Update position and inform the world about it
 	// Also set new node position to move sprites
 	virtual void setPosition(const cocos2d::Vec2& pos) override;
@@ -35,6 +43,10 @@ protected:
 	cocos2d::Node* rootNode_;
 	// Scene
 	cocos2d::Scene* sceneNode_ = nullptr;
+
+private:
+	// Event listeners
+	std::unordered_set<GameObjectEventListener*> listeners_;
 };
 
 #endif // __GAME_OBJECT_H__
