@@ -16,6 +16,9 @@ Projectile::~Projectile() = default;
 // Called on hits
 void Projectile::onHit(const PhysContact& contact)
 {
+	GameObject::onHit(contact);
+
+	// TODO move to LaserBall
 	// Play sound
 	SimpleAudioEngine::getInstance()->playEffect(LASER_BOUNCE_SOUND_EFFECT);
 }
@@ -28,12 +31,13 @@ void Projectile::onOverlap(const PhysContact& contact)
 		return;
 
 	// Overlaped a Target
-	onOverlapTarget(target, contact.getDirectionFrom(this));
+	onHitTarget(target, contact.getDirectionFrom(this));
 }
 
 // Called on hitting (overlapping) a Target
-void Projectile::onOverlapTarget(Target* target, const Vec2& toTarget)
+void Projectile::onHitTarget(Target* target, const Vec2& toTarget)
 {
+	// TODO move to LaserBall
 	// Play sound
 	SimpleAudioEngine::getInstance()->playEffect(LASER_HIT_SOUND_EFFECT);
 

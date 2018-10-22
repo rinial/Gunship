@@ -4,7 +4,7 @@
 // Forward declarations
 class GameObject;
 
-// Abstract class that allows implementing onBeginContact function to handle collisions
+// Abstract class that allows handling events of GameObject
 class GameObjectEventListener
 {
 public:

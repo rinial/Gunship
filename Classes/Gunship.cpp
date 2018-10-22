@@ -37,8 +37,11 @@ void Gunship::stopShooting()
 }
 void Gunship::shoot()
 {
+	// Play sound
+	SimpleAudioEngine::getInstance()->playEffect(SHOOT_NORMAL_SOUND_EFFECT);
+	// TODO change to other sound effect for powerful shots
+
 	// TODO
-	// TODO dont forget sounds
 }
 
 // Adds game object to scene
@@ -65,7 +68,7 @@ Gunship::Gunship(const Vec2& pos) : GameObject(pos, GUNSHIP_MASS, GUNSHIP_BOUNCI
 	rootNode_->addChild(gun_, -1); // gun is below the hull
 
 	addCollider(std::make_unique<PhysCircleCollider>(hull_->getContentSize().width / 2, GUNSHIP_BITMASKS));
-	setMovement(std::make_unique<PhysMovement>(Vec2(50, 100))); // TODO ()
+	setMovement(std::make_unique<PhysMovement>());
 }
 // Important for cleaning memory using base class pointe
 Gunship::~Gunship() = default;

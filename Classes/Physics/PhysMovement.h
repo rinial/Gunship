@@ -29,19 +29,21 @@ public:
 	virtual void move(float dT);
 
 	// Stops the body. It may still move later
-	virtual void stop() { speed_ = cocos2d::Vec2::ZERO; }
+	virtual void stop() { newSpeed_ = cocos2d::Vec2::ZERO; }
 
 	// Constructor
-	explicit PhysMovement(const cocos2d::Vec2& speed = cocos2d::Vec2::ZERO) : speed_(speed) {}
+	explicit PhysMovement(const cocos2d::Vec2& speed = cocos2d::Vec2::ZERO) : newSpeed_(speed) {}
 
 	// Important for cleaning memory using base class pointer
 	virtual ~PhysMovement() = default;
 
 protected:
-	// Speed of the PhysBody, can be changed in children
+	// New speed that should be changed when speed needs to change
+	cocos2d::Vec2 newSpeed_;
+private:
+	// Actual speed of the PhysBody, changed before move()
 	cocos2d::Vec2 speed_;
 
-private:
 	// Only set directly from PhysBody upon adding new movement_
 	PhysBody* body_ = nullptr;
 };

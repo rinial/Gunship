@@ -43,7 +43,7 @@ void PhysMovement::onHit(const PhysContact& contact)
 		const auto nA = speed_.project(n);
 
 		// calculate speed
-		speed_ = pA - bounciness * nA;
+		newSpeed_ = pA - bounciness * nA;
 	}
 	else
 	{
@@ -60,12 +60,13 @@ void PhysMovement::onHit(const PhysContact& contact)
 		const auto nB = sB.project(n);
 
 		// calculate speed
-		speed_ = pA + (nA * mA + nB * mB + bounciness * mB * (nB - nA)) / (mA + mB);
+		newSpeed_ = pA + (nA * mA + nB * mB + bounciness * mB * (nB - nA)) / (mA + mB);
 	}
 }
 
 // Evaluates body movement over a period of time
 void PhysMovement::move(const float dT)
 {
+	speed_ = newSpeed_;
 	body_->setPosition(body_->getPosition() + speed_ * dT);
 }

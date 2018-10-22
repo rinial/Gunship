@@ -1,10 +1,5 @@
 #include "Target.h"
-#include "Physics/Physics.h"
 #include "Projectile.h"
-#include "Definitions.h"
-
-// #include "audio/include/SimpleAudioEngine.h"
-// using namespace CocosDenshion;
 
 USING_NS_CC;
 

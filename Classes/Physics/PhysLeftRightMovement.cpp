@@ -9,7 +9,7 @@ void PhysLeftRightMovement::move(const float dT)
 	PhysMovement::move(dT);
 
 	// rotate speed
-	speed_ = speed_.rotateByAngle(Vec2::ZERO, nextAngleFunction_(dT, curveK_, angularSpeed_));
+	newSpeed_ = getSpeed().rotateByAngle(Vec2::ZERO, nextAngleFunction_(dT, curveK_, angularSpeed_));
 
 	// change K
 	if (goingDown_)

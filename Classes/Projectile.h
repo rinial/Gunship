@@ -21,7 +21,7 @@ public:
 
 protected:
 	// Called on hitting (overlapping) a Target
-	virtual void onOverlapTarget(class Target* target, const cocos2d::Vec2& toTarget);
+	virtual void onHitTarget(class Target* target, const cocos2d::Vec2& toTarget);
 };
 
 #endif // __PROJECTILE_H__

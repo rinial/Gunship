@@ -4,8 +4,7 @@
 #include "GameOverScene.h"
 #include "Gunship.h"
 #include "Target.h"
-// TODO uncomment
-// #include "Asteroid.h"
+#include "Asteroid.h"
 #include "Physics/Physics.h"
 #include "Definitions.h"
 #include <ctime>
@@ -88,6 +87,12 @@ bool GameScene::init()
 	gunship_ = gunship.get(); // save pointer for easy access
 	gunship->addToScene(this, Z_LEVEL_GUNSHIP); // add cocos2d node to scene
 	sceneWorld_->addBody(std::move(gunship)); // PhysWorld controls memory
+
+	// TODO delete
+	auto asteroid = std::make_unique<Asteroid>(CENTER + Vec2(300, 50), std::make_unique<PhysMovement>(Vec2(-80, 0)));
+	asteroid->addListener(this); // start listening to target events
+	asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
+	sceneWorld_->addBody(std::move(asteroid));
 
 	// TODO move to gunship
 	// Add all possible projectiles to pool to avoid FPS drops on creating new ones
