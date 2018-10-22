@@ -10,8 +10,8 @@ class Asteroid : public Target
 
 public:
 	// Constructors
-	explicit Asteroid(const cocos2d::Vec2& pos);
-	Asteroid(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement);
+	explicit Asteroid(const cocos2d::Vec2& pos, const float& scale = 1);
+	Asteroid(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement, const float& scale = 1);
 	// Important for cleaning memory using base class pointer
 	virtual ~Asteroid();
 

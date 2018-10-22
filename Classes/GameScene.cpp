@@ -88,12 +88,6 @@ bool GameScene::init()
 	gunship->addToScene(this, Z_LEVEL_GUNSHIP); // add cocos2d node to scene
 	sceneWorld_->addBody(std::move(gunship)); // PhysWorld controls memory
 
-	// TODO delete
-	auto asteroid = std::make_unique<Asteroid>(CENTER + Vec2(300, 50), std::make_unique<PhysMovement>(Vec2(-80, 0)));
-	asteroid->addListener(this); // start listening to target events
-	asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
-	sceneWorld_->addBody(std::move(asteroid));
-
 	// TODO move to gunship
 	// Add all possible projectiles to pool to avoid FPS drops on creating new ones
 	for (unsigned int i = 0; i < maxNumProjectiles; ++i) {
@@ -103,13 +97,31 @@ bool GameScene::init()
 		// TODO sceneWorld_->addBody(std::move(projectile)); // PhysWorld controls memory
 	}
 
-	// Create all asteroids in random positions
-	// TODO make sure they dont interfere with each other and leave space for gunship in center
+	// We create it just to find size
+	auto tempAsteroid = Sprite::create();
+	tempAsteroid->initWithFile(ASTEROID_SPRITE);
+	const auto asteroidSize = tempAsteroid->getContentSize();
+	const auto maxAsteroidSize = asteroidSize * ASTEROID_MAX_SCALE;
+
+	// Create all asteroids in random positions with random speeds and scales
 	for (unsigned int i = 0; i < maxScore_; ++i) {
-		// TODO auto asteroid = std::make_unique<Asteroid>(...);
-		// TODO asteroid->addEventListener(this); // start listening to target events
-		// TODO asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
-		// TODO sceneWorld_->addBody(std::move(asteroid));
+		// TODO !! make sure they dont interfere with each other and leave space for gunship in center
+		auto position = ORIGIN + maxAsteroidSize / 2 + Vec2((V_SIZE.width - maxAsteroidSize.width) * rand_0_1(), (V_SIZE.height - maxAsteroidSize.height) * rand_0_1()); 
+		auto scale = ASTEROID_MIN_SCALE + rand_0_1() * (ASTEROID_MAX_SCALE - ASTEROID_MIN_SCALE);
+		auto speed = Vec2::ONE.rotateByAngle(Vec2::ZERO, rand_0_1() * CC_DEGREES_TO_RADIANS(360)) // random direction
+		             * rand_0_1() * ASTEROID_MAX_SPEED * V_SIZE.width / (scale * scale);         // random magnitude
+		std::unique_ptr<PhysMovement> movement;
+		if (rand_0_1() > 0.5)
+			movement = std::make_unique<PhysMovement>(speed);
+		else {
+			auto angularSpeed = rand_minus1_1() * CC_DEGREES_TO_RADIANS(ASTEROID_MAX_ANGULAR_SPEED);
+			auto curveTime = ASTEROID_MIN_CURVE_TIME + rand_0_1() * (ASTEROID_MAX_CURVE_TIME - ASTEROID_MIN_CURVE_TIME);
+			movement = std::make_unique<PhysLeftRightMovement>(speed, angularSpeed, curveTime);
+		}
+		auto asteroid = std::make_unique<Asteroid>(position, std::move(movement), scale);
+		asteroid->addListener(this); // start listening to target events
+		asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
+		sceneWorld_->addBody(std::move(asteroid));
 	}
 
 	// Start listening to mouse
@@ -169,25 +181,19 @@ void GameScene::continueToMenu(float dT)
 // Shoot while mouse is down
 void GameScene::onMouseDown(EventMouse* event)
 {
-	if (!playing_)
-		return;
-
-	// TODO turn gunship's shooting mode on
+	gunship_->startShooting();
 }
 void GameScene::onMouseUp(EventMouse* event)
 {
-	if (!playing_)
-		return;
-
-	// TODO turn gunship's shooting mode off
+	gunship_->stopShooting();
 }
-void GameScene::onMouseMove(cocos2d::EventMouse* event)
+void GameScene::onMouseMove(EventMouse* event)
 {
 	mouseLocation_ = event->getLocationInView();
 }
 
 // Handle keyboard events
-void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
+void GameScene::onKeyPressed(const EventKeyboard::KeyCode keyCode, Event* event)
 {
 	// Go back to menu
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE)
@@ -267,8 +273,5 @@ void GameScene::physicsStep(const float dT)
 // General update
 void GameScene::update(const float dT)
 {
-	if (!playing_)
-		return;
-
 	gunship_->lookAt(mouseLocation_);
 }

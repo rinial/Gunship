@@ -50,12 +50,9 @@
 #define GAME_BACKGROUND_MUSIC "audio/bgGame.mp3"
 #define MENU_BACKGROUND_MUSIC "audio/bgMenu.wav"
 #define CLICK_SOUND_EFFECT "audio/click.wav"
-// TODO use
 #define LASER_BOUNCE_SOUND_EFFECT "audio/laserBounce.wav"
-// TODO use
 #define LASER_HIT_SOUND_EFFECT "audio/laserHit.wav"
 #define SCORE_TICK_SOUND_EFFECT "audio/scoreTick.wav"
-// TODO use
 #define SHOOT_NORMAL_SOUND_EFFECT "audio/shootNormal.wav"
 // TODO use
 #define SHOOT_POWERFUL_SOUND_EFFECT "audio/shootPowerful.wav"
@@ -78,16 +75,20 @@
 #define Z_LEVEL_UI			4
 
 // For gunship
-// TODO read from file
-#define PROJECTILE_SPEED 200
 #define SHOT_INTERVAL 0.8
 #define PROJECTILE_LIFE_TIME 10
-#define GUNSHIP_MASS 2
+#define GUNSHIP_MASS 3.5
 #define GUNSHIP_BOUNCINESS 1
 
-// For astroids
+// For asteroids
 #define ASTEROID_MASS 5
 #define ASTEROID_BOUNCINESS 1
+#define ASTEROID_MAX_SPEED 0.08 // based on screen width
+#define ASTEROID_MAX_ANGULAR_SPEED 120
+#define ASTEROID_MIN_CURVE_TIME 1
+#define ASTEROID_MAX_CURVE_TIME 10
+#define ASTEROID_MIN_SCALE 0.8
+#define ASTEROID_MAX_SCALE 1.6
 
 // For physics
 #define PHYSICS_UPDATE_INTERVAL (1.0 / 60)
