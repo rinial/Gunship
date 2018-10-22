@@ -159,7 +159,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Physics\PhysLeftRightMovement.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysMovement.cpp" />
     <ClCompile Include="..\Classes\Physics\PhysWorld.cpp" />
+    <ClCompile Include="..\Classes\Projectile.cpp" />
     <ClCompile Include="..\Classes\SplashScene.cpp" />
+    <ClCompile Include="..\Classes\Target.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,7 +182,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Physics\PhysLeftRightMovement.h" />
     <ClInclude Include="..\Classes\Physics\PhysMovement.h" />
     <ClInclude Include="..\Classes\Physics\PhysWorld.h" />
+    <ClInclude Include="..\Classes\Projectile.h" />
     <ClInclude Include="..\Classes\SplashScene.h" />
+    <ClInclude Include="..\Classes\Target.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

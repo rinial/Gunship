@@ -118,14 +118,8 @@ bool GameScene::init()
 	keyboardListener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
-	// Start incrementing time
-	this->schedule(schedule_selector(GameScene::incrementGameTime), 1, maxGameTime_ - 1, SCENE_TRANSITION_TIME);
-
-	// Start updating physics
-	this->schedule(schedule_selector(GameScene::physicsStep), PHYSICS_UPDATE_INTERVAL, CC_REPEAT_FOREVER, SCENE_TRANSITION_TIME);
-
-	// Start updates
-	this->scheduleUpdate();
+	// We start all schedule only after scene transition is finished
+	this->scheduleOnce(schedule_selector(GameScene::startSchedules), SCENE_TRANSITION_TIME);
 
 	return true;
 }
@@ -196,6 +190,17 @@ void GameScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
 	// TODO
+}
+
+// Start all schedules
+void GameScene::startSchedules(float dT)
+{
+	// Start incrementing time
+	this->schedule(schedule_selector(GameScene::incrementGameTime), 1, maxGameTime_ - 1, 0);
+	// Start updating physics
+	this->schedule(schedule_selector(GameScene::physicsStep), PHYSICS_UPDATE_INTERVAL);
+	// Start general updates
+	this->scheduleUpdate();
 }
 
 // Increment game time every second

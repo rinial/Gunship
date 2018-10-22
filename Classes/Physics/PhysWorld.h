@@ -50,6 +50,9 @@ private:
 	// All bodies that should be checked for collisions next
 	// We need set so that one body isn't added for evaluation several times
 	std::unordered_set<PhysBody*> forEvaluation_; 
+
+	// Bodies are removed only at the start of new step to avoid problems
+	std::unordered_set<PhysBody*> forRemoval_;
 };
 
 #endif // __PHYS_WORLD_H__

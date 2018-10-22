@@ -52,6 +52,9 @@ private:
 	unsigned int score_ = 0;
 	unsigned int maxScore_ = 0;
 
+	// Start all schedules
+	void startSchedules(float dT);
+
 	// Increment game time every second
 	void incrementGameTime(float dT);
 	// This is where game time is shown

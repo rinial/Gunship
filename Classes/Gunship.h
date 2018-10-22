@@ -18,6 +18,7 @@ public:
 	void shoot();
 
 	// Adds game object to scene
+	// Also create projectiles for future shooting
 	virtual void addToScene(cocos2d::Scene* scene, int zLevel) override;
 
 	// Constructor

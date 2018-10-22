@@ -19,14 +19,7 @@ void PhysWorld::removeBody(PhysBody* body)
 		return; // it's ok to 'remove' nullptr from the bodies_
 		// throw std::invalid_argument("body can't be nullptr");
 
-	forEvaluation_.erase(body);
-	removeFromContacts(body);
-	//bodies_.erase(std::find_if(bodies_.begin(), bodies_.end(), [&body](auto b) { return body == b.get(); }));
-	for (auto it = bodies_.begin(); it != bodies_.end(); ++it)
-		if (it->get() == body) {
-			bodies_.erase(it);
-			break;
-		}
+	forRemoval_.insert(body);
 }
 
 // Removes all contacts with specific body from currentContacts_
@@ -44,7 +37,20 @@ void PhysWorld::removeFromContacts(PhysBody* body)
 // Finds collisions, sends events (and can move physics simulation if we were actually simulating something)
 void PhysWorld::step(const float dT)
 {
-	// First call steps in all active bodies
+	// First remove all for removal
+	for (auto body : forRemoval_) {
+		forEvaluation_.erase(body);
+		removeFromContacts(body);
+		//bodies_.erase(std::find_if(bodies_.begin(), bodies_.end(), [&body](auto b) { return body == b.get(); }));
+		for (auto it = bodies_.begin(); it != bodies_.end(); ++it)
+			if (it->get() == body) {
+				bodies_.erase(it);
+				break;
+			}
+	}
+	forRemoval_.clear();
+
+	// Then call steps in all active bodies
 	for (auto& body : bodies_)
 		if (body->isActive())
 			body->step(dT);

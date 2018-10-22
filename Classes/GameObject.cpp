@@ -27,6 +27,14 @@ void GameObject::addToScene(Scene* scene, const int zLevel)
 	scene->addChild(rootNode_, zLevel);
 }
 
+// Destroy this object
+void GameObject::destroy()
+{
+	onDestroy();
+	rootNode_->removeFromParentAndCleanup(true);
+	getWorld()->removeBody(this);
+}
+
 // Constructor
 GameObject::GameObject(const Vec2& pos, const float& mass, const float& bounciness) : PhysBody(pos, mass, bounciness)
 {

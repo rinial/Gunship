@@ -19,6 +19,12 @@ public:
 	// Adds game object to scene
 	virtual void addToScene(cocos2d::Scene* scene, int zLevel = 0);
 
+	// Destroy this object, calls onDestroy first for children to add functionality
+	void destroy();
+protected:
+	virtual void onDestroy() {}
+
+public:
 	// Constructor
 	explicit GameObject(const cocos2d::Vec2& pos = cocos2d::Vec2::ZERO, const float& mass = 1, const float& bounciness = 1);
 	// Important for cleaning memory using base class pointer

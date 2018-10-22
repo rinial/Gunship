@@ -42,6 +42,7 @@ void Gunship::shoot()
 }
 
 // Adds game object to scene
+// Also create projectiles for future shooting
 void Gunship::addToScene(Scene* scene, const int zLevel)
 {
 	GameObject::addToScene(scene, zLevel);
