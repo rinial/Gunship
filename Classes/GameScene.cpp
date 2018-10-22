@@ -8,6 +8,7 @@
 #include "Physics/Physics.h"
 #include "Definitions.h"
 #include <ctime>
+#include <numeric>
 
 #include "audio/include/SimpleAudioEngine.h"
 using namespace CocosDenshion;
@@ -97,19 +98,46 @@ bool GameScene::init()
 		// TODO sceneWorld_->addBody(std::move(projectile)); // PhysWorld controls memory
 	}
 
-	// We create it just to find size
+	// We create it just to find normal size
+	auto tempGunship = Sprite::create();
+	tempGunship->initWithFile(GUNSHIP_SPRITE);
+	const auto gunshipSize = tempGunship->getContentSize();
+
+	// We create it just to find normal size
 	auto tempAsteroid = Sprite::create();
 	tempAsteroid->initWithFile(ASTEROID_SPRITE);
 	const auto asteroidSize = tempAsteroid->getContentSize();
 	const auto maxAsteroidSize = asteroidSize * ASTEROID_MAX_SCALE;
 
+	// Rescale asteroids if too many of them have to be on the screen
+	const auto square = V_SIZE.width * V_SIZE.height;
+	auto cellSide = std::sqrt(square * ASTEROIDS_SPARCITY / maxScore_);
+	if (cellSide > maxAsteroidSize.width) cellSide = maxAsteroidSize.width; // we don't want cells to be too big with fewer asteroids
+	const unsigned int nX = std::floor(V_SIZE.width / cellSide) + 1;
+	const unsigned int nY = std::floor(V_SIZE.height / cellSide) + 1;
+	cellSide = std::min(V_SIZE.width / nX, V_SIZE.height / nY);
+	const auto extraScale = cellSide / maxAsteroidSize.width;
+
+	// Create cells where asteroids can be placed
+	const auto nCells = nX * nY;
+	std::vector<unsigned int> cellIndices(nCells);
+	std::iota(cellIndices.begin(), cellIndices.end(), 0);
+	std::shuffle(cellIndices.begin(), cellIndices.end(), std::mt19937(std::random_device()())); // shuffle indices
 	// Create all asteroids in random positions with random speeds and scales
-	for (unsigned int i = 0; i < maxScore_; ++i) {
-		// TODO !! make sure they dont interfere with each other and leave space for gunship in center
-		auto position = ORIGIN + maxAsteroidSize / 2 + Vec2((V_SIZE.width - maxAsteroidSize.width) * rand_0_1(), (V_SIZE.height - maxAsteroidSize.height) * rand_0_1()); 
-		auto scale = ASTEROID_MIN_SCALE + rand_0_1() * (ASTEROID_MAX_SCALE - ASTEROID_MIN_SCALE);
+	unsigned int placed = 0;
+	for(unsigned int i = 0; i < nCells && placed < maxScore_; ++i) {
+		const auto center = (Vec2(cellIndices[i] % nX, cellIndices[i] / nX) + Vec2(0.5, 0.5)) * cellSide;
+
+		// Check if cell is ok (not near center)
+		if (std::abs(CENTER_X - center.x) < cellSide / 2 + gunshipSize.width / 2 ||
+			std::abs(CENTER_Y - center.y) < cellSide / 2 + gunshipSize.height / 2)
+			continue;
+
+		auto scale = (ASTEROID_MIN_SCALE + rand_0_1() * (ASTEROID_MAX_SCALE - ASTEROID_MIN_SCALE)) * extraScale;
+		const auto size = asteroidSize * scale;
+		auto position = center + size / 2 + Vec2((cellSide - size.width) * rand_0_1(), (cellSide - size.height) * rand_0_1());
 		auto speed = Vec2::ONE.rotateByAngle(Vec2::ZERO, rand_0_1() * CC_DEGREES_TO_RADIANS(360)) // random direction
-		             * rand_0_1() * ASTEROID_MAX_SPEED * V_SIZE.width / (scale * scale);         // random magnitude
+			* rand_0_1() * ASTEROID_MAX_SPEED * V_SIZE.width / (scale * scale);                  // random magnitude
 		std::unique_ptr<PhysMovement> movement;
 		if (rand_0_1() > 0.5)
 			movement = std::make_unique<PhysMovement>(speed);
@@ -122,7 +150,28 @@ bool GameScene::init()
 		asteroid->addListener(this); // start listening to target events
 		asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
 		sceneWorld_->addBody(std::move(asteroid));
+		++placed;
 	}
+	// Create all asteroids in random positions with random speeds and scales
+	//for (unsigned int i = placed; i < maxScore_; ++i) {
+	//	// TODO !! make sure they dont interfere with each other and leave space for gunship in center
+	//	auto position = ORIGIN + maxAsteroidSize / 2 + Vec2((V_SIZE.width - maxAsteroidSize.width) * rand_0_1(), (V_SIZE.height - maxAsteroidSize.height) * rand_0_1()); 
+	//	auto scale = (ASTEROID_MIN_SCALE + rand_0_1() * (ASTEROID_MAX_SCALE - ASTEROID_MIN_SCALE)) * extraScale;
+	//	auto speed = Vec2::ONE.rotateByAngle(Vec2::ZERO, rand_0_1() * CC_DEGREES_TO_RADIANS(360)) // random direction
+	//	             * rand_0_1() * ASTEROID_MAX_SPEED * V_SIZE.width / (scale * scale);         // random magnitude
+	//	std::unique_ptr<PhysMovement> movement;
+	//	if (rand_0_1() > 0.5)
+	//		movement = std::make_unique<PhysMovement>(speed);
+	//	else {
+	//		auto angularSpeed = rand_minus1_1() * CC_DEGREES_TO_RADIANS(ASTEROID_MAX_ANGULAR_SPEED);
+	//		auto curveTime = ASTEROID_MIN_CURVE_TIME + rand_0_1() * (ASTEROID_MAX_CURVE_TIME - ASTEROID_MIN_CURVE_TIME);
+	//		movement = std::make_unique<PhysLeftRightMovement>(speed, angularSpeed, curveTime);
+	//	}
+	//	auto asteroid = std::make_unique<Asteroid>(position, std::move(movement), scale);
+	//	asteroid->addListener(this); // start listening to target events
+	//	asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
+	//	sceneWorld_->addBody(std::move(asteroid));
+	//}
 
 	// Start listening to mouse
 	auto mouseListener = EventListenerMouse::create();
