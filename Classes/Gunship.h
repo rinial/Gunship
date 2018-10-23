@@ -21,8 +21,11 @@ public:
 	// Also create projectiles for future shooting
 	virtual void addToScene(cocos2d::Scene* scene, int zLevel) override;
 
+	// Spawn projectiles
+	virtual void step(float dT) override;
+
 	// Constructor
-	explicit Gunship(const cocos2d::Vec2& pos = cocos2d::Vec2::ZERO);
+	explicit Gunship(const cocos2d::Vec2& pos = cocos2d::Vec2::ZERO, float laserSpeed = 100);
 	// Important for cleaning memory using base class pointer
 	virtual ~Gunship();
 
@@ -33,6 +36,12 @@ private:
 	// Sprites
 	cocos2d::Sprite* hull_;
 	cocos2d::Sprite* gun_;
+
+	// For shooting
+	float laserSpeed_;
+	float sinceLastShot_;
+	bool shooting_ = false;
+	unsigned int shotCount_ = 0;
 };
 
 #endif // __GUNSHIP_H__

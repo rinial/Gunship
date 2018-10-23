@@ -14,8 +14,6 @@ public:
 	// Important for cleaning memory using base class pointer
 	virtual ~Projectile();
 
-	// Called on hits
-	virtual void onHit(const PhysContact& contact) override;
 	// Called on overlaps
 	virtual void onOverlap(const PhysContact& contact) override;
 

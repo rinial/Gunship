@@ -8,7 +8,7 @@ USING_NS_CC;
 // Add/remove a body
 void PhysWorld::addBody(std::unique_ptr<PhysBody> body)
 {
-	if (!body)
+	if (!body || !body.get())
 		throw std::invalid_argument("body can't be nullptr");
 
 	body->setWorld(this);
@@ -62,9 +62,14 @@ void PhysWorld::step(const float dT)
 	forRemoval_.clear();
 
 	// Then call steps in all active bodies
-	for (auto& body : bodies_)
+	const auto currentBodiesSize = bodies_.size();
+	// Can't do that since bodies can sometimes create new bodies in their step (but can't delete)
+	// for(auto body : bodies_)
+	for (unsigned int i = 0; i < currentBodiesSize; ++i) {
+		auto body = bodies_[i].get();
 		if (body->isActive())
 			body->step(dT);
+	}
 
 	// Update partitions
 	// Partitions are needed for faster computations

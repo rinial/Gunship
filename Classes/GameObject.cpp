@@ -40,6 +40,7 @@ void GameObject::addToScene(Scene* scene, const int zLevel)
 	if (!scene)
 		throw std::invalid_argument("scene can't be nullptr");
 	scene->addChild(rootNode_, zLevel);
+	sceneNode_ = scene;
 }
 
 // Destroy this object

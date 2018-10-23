@@ -36,7 +36,7 @@ bool GameScene::init()
 	// TODO read from file
 	maxGameTime_ = 20;
 	maxScore_ = 20; // number of targets
-	unsigned int projectileSpeed = 100; // TODO use it
+	unsigned int projectileSpeed = 300;
 
 	// Background music
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(GAME_BACKGROUND_MUSIC, true);
@@ -100,7 +100,7 @@ bool GameScene::init()
 	sceneWorld_->addBody(std::move(edgeBody));
 
 	// Create a gunship in the center of the screen
-	auto gunship = std::make_unique<Gunship>(CENTER);
+	auto gunship = std::make_unique<Gunship>(CENTER, projectileSpeed);
 	gunship_ = gunship.get(); // save pointer for easy access
 	gunship->addToScene(this, Z_LEVEL_GUNSHIP); // add cocos2d node to scene
 	sceneWorld_->addBody(std::move(gunship)); // PhysWorld controls memory

@@ -41,7 +41,7 @@
 #define RETRY_BUTTON_PRESSED_SPRITE "sprites/RetryButtonPressed.png"
 #define GUNSHIP_SPRITE "sprites/Gunship.png"
 #define GUN_SPRITE "sprites/Gun.png"
-#define PROJECTILE_SPRITE "sprites/Projectile.png"
+#define LASER_BALL_SPRITE "sprites/LaserBall.png"
 #define ASTEROID_SPRITE "sprites/Asteroid.png"
 #define WIN_SPRITE "sprites/WinLabel.png"
 #define LOSS_SPRITE "sprites/LossLabel.png"
@@ -54,7 +54,6 @@
 #define LASER_HIT_SOUND_EFFECT "audio/laserHit.wav"
 #define SCORE_TICK_SOUND_EFFECT "audio/scoreTick.wav"
 #define SHOOT_NORMAL_SOUND_EFFECT "audio/shootNormal.wav"
-// TODO use
 #define SHOOT_POWERFUL_SOUND_EFFECT "audio/shootPowerful.wav"
 #define TIME_OUT_SOUND_EFFECT "audio/timeOut.wav"
 #define TIME_TICK_SOUND_EFFECT "audio/timeTick.wav"
@@ -75,10 +74,17 @@
 #define Z_LEVEL_UI			4
 
 // For gunship
-#define SHOT_INTERVAL 0.8
-#define PROJECTILE_LIFE_TIME 10
+#define SHOT_INTERVAL 0.5
+#define PROJECTILE_LIFE_TIME 3 // TODO delete?
+#define POWER_SHOT_INDEX 4
+#define POWER_SHOT_SPEED_K 1.2
+#define POWER_SHOT_ANGULAR_SPEED 400
+#define POWER_SHOT_CURVE_DURATION 0.5
 #define GUNSHIP_MASS 3.5
 #define GUNSHIP_BOUNCINESS 1
+#define LASER_BALL_MASS 0.8
+#define LASER_BALL_BOUNCINESS 1
+#define LASER_BALL_SPAWN_DISTANCE 0.8 // based on cannon size
 
 // For asteroids
 #define ASTEROIDS_SPARCITY 0.4
@@ -105,17 +111,17 @@
 #define COLLISION_BITMASK_PROJECTILE 0b00000100
 #define COLLISION_BITMASK_EDGE	     0b00001000
 // self, hit, overlap
-#define EDGE_BITMASKS      COLLISION_BITMASK_EDGE, \
-                           COLLISION_BITMASK_ALL, \
-                           COLLISION_BITMASK_NOTHING
-#define GUNSHIP_BITMASKS   COLLISION_BITMASK_GUNSHIP, \
-	                       COLLISION_BITMASK_ASTEROID | COLLISION_BITMASK_EDGE | COLLISION_BITMASK_GUNSHIP, \
-	                       COLLISION_BITMASK_NOTHING
-#define ASTEROID_BITMASKS  COLLISION_BITMASK_ASTEROID, \
-	                       COLLISION_BITMASK_ASTEROID | COLLISION_BITMASK_EDGE | COLLISION_BITMASK_GUNSHIP, \
-						   COLLISION_BITMASK_PROJECTILE
-#define LASERBALL_BITMASKS COLLISION_BITMASK_PROJECTILE, \
-	                       COLLISION_BITMASK_EDGE | COLLISION_BITMASK_PROJECTILE, \
-                           COLLISION_BITMASK_ASTEROID
+#define EDGE_BITMASKS       COLLISION_BITMASK_EDGE, \
+                            COLLISION_BITMASK_ALL, \
+                            COLLISION_BITMASK_NOTHING
+#define GUNSHIP_BITMASKS    COLLISION_BITMASK_GUNSHIP, \
+	                        COLLISION_BITMASK_ASTEROID | COLLISION_BITMASK_EDGE | COLLISION_BITMASK_GUNSHIP, \
+	                        COLLISION_BITMASK_NOTHING
+#define ASTEROID_BITMASKS   COLLISION_BITMASK_ASTEROID, \
+	                        COLLISION_BITMASK_ASTEROID | COLLISION_BITMASK_EDGE | COLLISION_BITMASK_GUNSHIP, \
+						    COLLISION_BITMASK_PROJECTILE
+#define LASER_BALL_BITMASKS COLLISION_BITMASK_PROJECTILE, \
+	                        COLLISION_BITMASK_EDGE, \
+                            COLLISION_BITMASK_ASTEROID
 
 #endif // __DEFINITIONS_H__

@@ -9,7 +9,6 @@ class PhysCollider;
 class PhysMovement;
 class PhysContact;
 
-// TODO check if it works
 // Normal body creation:
 // 1) create base    |  auto body std::make_unique<PhysBody>(pos, mass, ...);
 // 2) add colliders  |  body->addCollider(std::move(std::make_unique<PhysCollider>(pos, ...)));
