@@ -18,6 +18,7 @@ void Asteroid::onHit(const PhysContact& contact)
 		// Create particle
 		auto sparks = ParticleSystemQuad::create(ASTEROID_BOUNCED_PARTICLES);
 		sparks->setPosition(getPosition() + contact.getDirectionFrom(this) * asteroid_->getContentSize().width / 2);
+		sparks->setScale(asteroid_->getScale());
 		sceneNode_->addChild(sparks, rootNode_->getLocalZOrder());
 	}
 
@@ -53,6 +54,7 @@ void Asteroid::onBeingHit(Projectile* projectile, const Vec2& toProjectile)
 			auto wreck = ParticleSystemQuad::create(ASTEROID_BREAK_PARTICLES);
 			wreck->setPosition(getPosition());
 			wreck->setColor(color_);
+			wreck->setScale(asteroid_->getScale());
 			sceneNode_->addChild(wreck, rootNode_->getLocalZOrder());
 		}
 

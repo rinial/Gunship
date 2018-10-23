@@ -30,10 +30,36 @@ bool GameScene::init()
 	// Seed randomness
 	std::srand(std::time(nullptr));
 
-	// TODO read from file
-	maxGameTime_ = 20;
-	maxScore_ = 20; // number of targets
-	unsigned int projectileSpeed = 500;
+	// Read some data from file
+	const auto input = FileUtils::getInstance()->getStringFromFile(INPUT_FILE);
+	std::stringstream inputStream(input);
+	// Initialize temporary data
+	auto maxScore = 0;
+	auto projectileSpeed = 0;
+	auto maxGameTime = 0;
+	std::string tag;
+	// Check all lines
+	// We allow empty lines or lines of other format along lines that SHOULD be there
+	while (!inputStream.eof()) {
+		std::string line;
+		std::getline(inputStream, line);
+		std::stringstream lineStream(line);
+		// Find tag
+		std::getline(lineStream, tag, '=');
+		// Check what tag is it
+		if (tag == INPUT_COUNT_TARGET_TAG)
+			lineStream >> maxScore;
+		else if (tag == INPUT_PROJECTILE_SPEED_TAG)
+			lineStream >> projectileSpeed;
+		else if (tag == INPUT_GAME_TIME_TAG)
+			lineStream >> maxGameTime;
+	}
+	// Check if data format is correct (all data is correctly initialized)
+	if (maxScore <= 0 || projectileSpeed <= 0 || maxGameTime <= 0)
+		throw std::invalid_argument(std::string("invalid format of ") + INPUT_FILE);
+	// Initialize actual data
+	maxScore_ = maxScore;
+	maxGameTime_ = maxGameTime;
 
 	// Background music
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(GAME_BACKGROUND_MUSIC, true);

@@ -148,5 +148,10 @@
 
 // Other
 #define TIME_OUT_TIMER 5
+#define INPUT_FILE "input.txt"
+#define INPUT_COUNT_TARGET_TAG "CountTarget"
+#define INPUT_PROJECTILE_SPEED_TAG "Speed"
+#define INPUT_GAME_TIME_TAG "Time"
+
 
 #endif // __DEFINITIONS_H__

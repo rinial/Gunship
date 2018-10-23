@@ -1,3 +1,3 @@
-CountTarget=2
-Speed=50
-Time=50
+CountTarget=20
+Speed=500
+Time=20
