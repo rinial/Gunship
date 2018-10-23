@@ -12,6 +12,71 @@
 
 USING_NS_CC;
 
+// AABB test (Axis Aligned Bounding Box)
+// Returns true if body's rectangle intersects specified rectangle
+// Useful for partitions and other calculations
+bool PhysContactEvaluator::inRect(PhysBody* body, const Vec2& origin, const Size& size)
+{
+	if (!body)
+		throw std::invalid_argument("body can't be a null pointers");
+
+	for (auto& collider : body->getColliders())
+		if (inRect(body->getPosition(), collider.get(), origin, size))
+			return true;
+	// No collider is in rect
+	return false;
+}
+// Same for colliders
+bool PhysContactEvaluator::inRect(const Vec2& posBody, PhysCollider* collider, const Vec2& origin, const Size& size)
+{
+	const auto circle = dynamic_cast<PhysCircleCollider*>(collider);
+	if (circle)
+		return inRect(posBody, circle, origin, size);
+
+	const auto box = dynamic_cast<PhysBoxCollider*>(collider);
+	if (box)
+		return inRect(posBody, box, origin, size);
+
+	// collider is unknown
+	return false;
+}
+// For box
+bool PhysContactEvaluator::inRect(const Vec2& posBody, PhysBoxCollider* box, const Vec2& origin, const Size& size)
+{
+	const auto positionA = posBody + box->getPosition();
+	const auto positionB = origin + size / 2; // center instead of bottom left corner
+
+	const auto xDist = std::abs(positionA.x - positionB.x);
+	const auto yDist = std::abs(positionA.y - positionB.y);
+
+	const auto sumWidth = box->getSize().width + size.width;
+	const auto sumHeight = box->getSize().height + size.height;
+
+	if (xDist > sumWidth / 2)
+		return false; // Too far on X axis
+	if (yDist > sumHeight / 2)
+		return false; // Too far on Y axis
+	return true;
+}
+// For circle
+bool PhysContactEvaluator::inRect(const Vec2& posBody, PhysCircleCollider* circle, const Vec2& origin, const Size& size)
+{
+	const auto positionA = posBody + circle->getPosition();
+	const auto positionB = origin + size / 2;
+
+	const auto xDist = std::abs(positionA.x - positionB.x);
+	const auto yDist = std::abs(positionA.y - positionB.y);
+
+	const auto sumWidthHalf = circle->getRadius() + size.width / 2;
+	const auto sumHeightHalf = circle->getRadius() + size.height / 2;
+
+	if (xDist > sumWidthHalf)
+		return false; // Too far on X axis
+	if (yDist > sumHeightHalf)
+		return false; // Too far on Y axis
+	return true;
+}
+
 // Contact tests
 // For bodies
 // contact is returned by reference if bodies do intersect
@@ -45,9 +110,6 @@ bool PhysContactEvaluator::intersects(PhysBody* a, PhysBody* b, PhysContact& con
 // direction is returned by reference if colliders do intersect
 bool PhysContactEvaluator::intersects(const Vec2& posA, PhysCollider* a, const Vec2& posB, PhysCollider* b, Vec2& direction, bool& isHit)
 {
-	if (!a || !b)
-		throw std::invalid_argument("colliders can't be null pointers");
-
 	// If bit masks are hit-compatible
 	if ((a->hitMask & b->selfMask) != 0 && (a->selfMask & b->hitMask) != 0)
 		isHit = true;

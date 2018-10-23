@@ -93,6 +93,9 @@
 
 // For physics
 #define PHYSICS_UPDATE_INTERVAL (1.0 / 60)
+#define N_PARTITIONS_X 3
+#define N_PARTITIONS_Y 2
+#define PARTITIONS_OUTSIDE_OFFSET 0.05 // based on screen size
 #define DIR_HELPER 0.92
 #define EDGE_WIDTH 10
 #define COLLISION_BITMASK_ALL        0b11111111

@@ -24,6 +24,8 @@ public:
 private:
 	// Removes all contacts with specific body from currentContacts_
 	void removeFromContacts(PhysBody* body);
+	// Removes body from all partitions
+	void removeFromPartitions(PhysBody* body);
 
 public:
 	// Return all current contacts
@@ -36,11 +38,24 @@ public:
 	// Sets these bodies for evaluation, or removes them from evaluation if they are not active anymore
 	void onManipulatedBody(PhysBody* body);
 
+private:
+	// Returns partition's origin
+	cocos2d::Vec2 getPartitionsOrigin(unsigned int index) const;
+
+public:
+	// Constructor
+	PhysWorld(const cocos2d::Vec2& origin, const cocos2d::Size& size);
 	// Needed to avoid problems with smart pointers
-	PhysWorld();
 	~PhysWorld();
 
 private:
+	// Parameters of the world
+	// These is where partitions are created
+	// Everything outside is ignored during contact evaluation
+	// Usually should be a bit wider than screen size
+	cocos2d::Size size_;
+	cocos2d::Vec2 origin_; // bottom left
+
 	// All bodies handled by this world
 	std::vector<std::unique_ptr<PhysBody>> bodies_;
 
@@ -53,6 +68,11 @@ private:
 
 	// Bodies are removed only at the start of new step to avoid problems
 	std::unordered_set<PhysBody*> forRemoval_;
+
+	// Bodies in partitions of the world
+	// Needed to make computations faster
+	std::vector<std::unordered_set<PhysBody*>> partitions_;
+	cocos2d::Size partitionSize_;
 };
 
 #endif // __PHYS_WORLD_H__

@@ -1,6 +1,9 @@
 #include "PhysWorld.h"
 #include "PhysBody.h"
 #include "PhysContactEvaluator.h"
+#include "Definitions.h"
+
+USING_NS_CC;
 
 // Add/remove a body
 void PhysWorld::addBody(std::unique_ptr<PhysBody> body)
@@ -34,6 +37,13 @@ void PhysWorld::removeFromContacts(PhysBody* body)
 	}
 }
 
+// Removes body from all partitions
+void PhysWorld::removeFromPartitions(PhysBody* body)
+{
+	for (auto& partition : partitions_)
+		partition.erase(body);
+}
+
 // Finds collisions, sends events (and can move physics simulation if we were actually simulating something)
 void PhysWorld::step(const float dT)
 {
@@ -41,6 +51,7 @@ void PhysWorld::step(const float dT)
 	for (auto body : forRemoval_) {
 		forEvaluation_.erase(body);
 		removeFromContacts(body);
+		removeFromPartitions(body);
 		//bodies_.erase(std::find_if(bodies_.begin(), bodies_.end(), [&body](auto b) { return body == b.get(); }));
 		for (auto it = bodies_.begin(); it != bodies_.end(); ++it)
 			if (it->get() == body) {
@@ -55,30 +66,44 @@ void PhysWorld::step(const float dT)
 		if (body->isActive())
 			body->step(dT);
 
-	// Now start testing for collisions
-	std::unordered_set<PhysBody*> testedBodies;
-	CONTACTS_SET newContacts;
-
-	// Check only those that have been changed
-	for (auto& bodyA : forEvaluation_)
-	{
-		testedBodies.insert(bodyA);
-
-		// We test it with every other body in the world, except for those that are already tested in their evaluation cycle
-		// TODO add space partioning to lessen the number of checks
-		for (auto& bodyB : bodies_) // bodyA is a simple pointer, bodyB is a unique one. Thus some differences
-		{
-			if (testedBodies.find(bodyB.get()) != testedBodies.end()) // if testedBodies.contains(bodyB)
-				continue;
-
-			PhysContact contact;
-			if (!PhysContactEvaluator::intersects(bodyA, bodyB.get(), contact))
-				continue;
-
-			// Contact occured, but it may be old. For now, just save it
-			newContacts.insert(contact);
+	// Update partitions
+	// Partitions are needed for faster computations
+	for (auto& body : forEvaluation_) {
+		for (unsigned int i = 0; i < partitions_.size(); ++i) {
+			// TODO improve partition check by first checking partitions of higher size
+			if (PhysContactEvaluator::inRect(body, getPartitionsOrigin(i), partitionSize_))
+				partitions_[i].insert(body);
+			else
+				partitions_[i].erase(body);
 		}
 	}
+
+	// Now start testing for collisions
+	CONTACTS_SET newContacts;
+	for (auto& partition : partitions_)
+	{
+		std::unordered_set<PhysBody*> testedBodies;
+		for (auto& bodyA : partition)
+		{
+			// We only check bodies that are for evaluation
+			if (forEvaluation_.find(bodyA) == forEvaluation_.end()) // if !forEvaluation.contains(bodyA)
+				continue;
+
+			testedBodies.insert(bodyA);
+			for (auto& bodyB : partition) {
+				if (testedBodies.find(bodyB) != testedBodies.end()) // if testedBodies.contains(bodyB)
+					continue;
+
+				PhysContact contact;
+				if (!PhysContactEvaluator::intersects(bodyA, bodyB, contact))
+					continue;
+
+				// Contact occured, but it may be old. For now, just save it
+				newContacts.insert(contact);
+			}
+		}
+	}
+
 	// We have evaluated all that we had for evaluation
 	forEvaluation_.clear();
 
@@ -127,9 +152,26 @@ void PhysWorld::onManipulatedBody(PhysBody* body)
 	{
 		forEvaluation_.erase(body);
 		removeFromContacts(body);
+		removeFromPartitions(body);
 	}
 }
 
+// Return partition's origin
+Vec2 PhysWorld::getPartitionsOrigin(const unsigned int index) const
+{
+	if (index > partitions_.size())
+		throw std::out_of_range("index of partitions out of range");
+
+	const auto column = index % N_PARTITIONS_X;
+	const auto row = index / N_PARTITIONS_X;
+	return origin_ + Vec2(column * partitionSize_.width, row * partitionSize_.height);
+}
+
+// Constructor
+PhysWorld::PhysWorld(const Vec2& origin, const Size& size) : size_(size), origin_(origin)
+{
+	partitions_ = std::vector<std::unordered_set<PhysBody*>>(N_PARTITIONS_X * N_PARTITIONS_Y);
+	partitionSize_ = Size(size_.width / N_PARTITIONS_X, size.height / N_PARTITIONS_Y);
+}
 // Needed to avoid problems with smart pointers
-PhysWorld::PhysWorld() = default;
 PhysWorld::~PhysWorld() = default;

@@ -14,6 +14,17 @@ class PhysBoxCollider;
 class PhysContactEvaluator
 {
 public:
+	// AABB test (Axis Aligned Bounding Box)
+	// Returns true if body's rectangle intersects specified rectangle
+	// Useful for partitions and other calculations
+	static bool inRect(PhysBody* body, const cocos2d::Vec2& origin, const cocos2d::Size& size);
+private:
+	// Same for colliders
+	static bool inRect(const cocos2d::Vec2& posBody, PhysCollider* collider, const cocos2d::Vec2& origin, const cocos2d::Size& size);
+	static bool inRect(const cocos2d::Vec2& posBody, PhysBoxCollider* box, const cocos2d::Vec2& origin, const cocos2d::Size& size);
+	static bool inRect(const cocos2d::Vec2& posBody, PhysCircleCollider* circle, const cocos2d::Vec2& origin, const cocos2d::Size& size);
+
+public:
 	// Contact tests
 	// For bodies
 	// contact is returned by reference if bodies do intersect
