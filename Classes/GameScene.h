@@ -77,6 +77,14 @@ private:
 	// Spaceship
 	// Just a pointer, PhysWorld handles its memory
 	class Gunship* gunship_ = nullptr;
+
+	// For spaceship controls
+	bool rightPressed_ = false;
+	bool leftPressed_ = false;
+	bool upPressed_ = false;
+	bool downPressed_ = false;
+	float xAxis_ = 0.0f;
+	float yAxis_ = 0.0f;
 };
 
 #endif // __GAME_SCENE_H__

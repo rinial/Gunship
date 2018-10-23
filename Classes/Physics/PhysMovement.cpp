@@ -67,6 +67,7 @@ void PhysMovement::onHit(const PhysContact& contact)
 // Evaluates body movement over a period of time
 void PhysMovement::move(const float dT)
 {
+	newSpeed_ += acceleration_ * dT;
 	speed_ = newSpeed_;
 	body_->setPosition(body_->getPosition() + speed_ * dT);
 }

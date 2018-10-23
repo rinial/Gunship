@@ -27,6 +27,12 @@ void Gunship::lookInDirection(const Vec2& direction)
 	gun_->setRotation(-CC_RADIANS_TO_DEGREES(gunDirection_.getAngle()));
 }
 
+// Accelerate in direction
+void Gunship::accelerate(const Vec2& direction)
+{
+	getMovement()->setAcceleration(direction.getNormalized() * GUNSHIP_ACCELERATION);
+}
+
 // Shooting functions
 void Gunship::startShooting()
 {

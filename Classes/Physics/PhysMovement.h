@@ -22,6 +22,10 @@ public:
 	// We don't have a public setter, cause movement is what controls speed
 	const cocos2d::Vec2& getSpeed() const { return speed_; }
 
+	// We allow setting acceleration
+	void setAcceleration(const cocos2d::Vec2& acceleration) { acceleration_ = acceleration; }
+	const cocos2d::Vec2& getAcceleration() const { return acceleration_; }
+
 	// Called from PhysBody on hits as it can affect movement
 	virtual void onHit(const PhysContact& contact);
 
@@ -32,7 +36,7 @@ public:
 	virtual void stop() { newSpeed_ = cocos2d::Vec2::ZERO; }
 
 	// Constructor
-	explicit PhysMovement(const cocos2d::Vec2& speed = cocos2d::Vec2::ZERO) : newSpeed_(speed) {}
+	explicit PhysMovement(const cocos2d::Vec2& speed = cocos2d::Vec2::ZERO, const cocos2d::Vec2& acceleration = cocos2d::Vec2::ZERO) : newSpeed_(speed), acceleration_(acceleration) {}
 
 	// Important for cleaning memory using base class pointer
 	virtual ~PhysMovement() = default;
@@ -43,6 +47,8 @@ protected:
 private:
 	// Actual speed of the PhysBody, changed before move()
 	cocos2d::Vec2 speed_;
+	// Acceleration of PhysBody that affects speed
+	cocos2d::Vec2 acceleration_;
 
 	// Only set directly from PhysBody upon adding new movement_
 	PhysBody* body_ = nullptr;

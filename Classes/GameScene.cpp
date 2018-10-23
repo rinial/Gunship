@@ -170,6 +170,7 @@ bool GameScene::init()
 	// Start listening to keyboard
 	auto keyboardListener = EventListenerKeyboard::create();
 	keyboardListener->onKeyPressed = CC_CALLBACK_2(GameScene::onKeyPressed, this);
+	keyboardListener->onKeyReleased = CC_CALLBACK_2(GameScene::onKeyReleased, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
 	// We start all schedule only after scene transition is finished
@@ -248,13 +249,57 @@ void GameScene::onKeyPressed(const EventKeyboard::KeyCode keyCode, Event* event)
 	case EventKeyboard::KeyCode::KEY_R:
 		retry();
 		break;
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+	case EventKeyboard::KeyCode::KEY_W:
+		upPressed_ = true;
+		yAxis_ = 1;
+		break;
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+	case EventKeyboard::KeyCode::KEY_S:
+		downPressed_ = true;
+		yAxis_ = -1;
+		break;
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+	case EventKeyboard::KeyCode::KEY_D:
+		rightPressed_ = true;
+		xAxis_ = 1;
+		break;
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+	case EventKeyboard::KeyCode::KEY_A:
+		leftPressed_ = true;
+		xAxis_ = -1;
+		break;
 	default:
 		break;
 	}
 }
-void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
+void GameScene::onKeyReleased(const EventKeyboard::KeyCode keyCode, Event* event)
 {
-	// TODO
+	switch (keyCode)
+	{
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+	case EventKeyboard::KeyCode::KEY_W:
+		upPressed_ = false;
+		yAxis_ = downPressed_ ? -1 : 0;
+		break;
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+	case EventKeyboard::KeyCode::KEY_S:
+		downPressed_ = false;
+		yAxis_ = upPressed_ ? 1 : 0;
+		break;
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+	case EventKeyboard::KeyCode::KEY_D:
+		rightPressed_ = false;
+		xAxis_ = leftPressed_ ? -1 : 0;
+		break;
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+	case EventKeyboard::KeyCode::KEY_A:
+		leftPressed_ = false;
+		xAxis_ = rightPressed_ ? 1 : 0;
+		break;
+	default:
+		break;
+	}
 }
 
 // Start all schedules
@@ -327,4 +372,5 @@ void GameScene::physicsStep(const float dT)
 void GameScene::update(const float dT)
 {
 	gunship_->lookAt(mouseLocation_);
+	gunship_->accelerate(Vec2(xAxis_, yAxis_));
 }

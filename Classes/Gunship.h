@@ -16,6 +16,9 @@ public:
 	void lookAt(const cocos2d::Vec2& position);
 	void lookInDirection(const cocos2d::Vec2& direction);
 
+	// Accelerate in direction
+	void accelerate(const cocos2d::Vec2& direction);
+
 	// Shooting functions
 	void startShooting();
 	void stopShooting();
