@@ -30,7 +30,9 @@ private:
 	// Go to game over scene
 	void continueToGameOver(float dT);
 	// Go to main menu scene
-	void continueToMenu(float dT);
+	void goToMenu();
+	// Go to game scene (retry)
+	void retry();
 
 	// Handle mouse events
 	// Shoot while mouse is down

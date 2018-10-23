@@ -55,8 +55,6 @@ bool MenuScene::init()
 // Start the game
 void MenuScene::menuPlayCallback(cocos2d::Ref* sender)
 {
-	CCLOG("play");
-
 	SimpleAudioEngine::getInstance()->playEffect(CLICK_SOUND_EFFECT);
 	const auto scene = GameScene::createScene();
 	Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
@@ -65,8 +63,6 @@ void MenuScene::menuPlayCallback(cocos2d::Ref* sender)
 // Exits the game
 void MenuScene::menuExitCallback(cocos2d::Ref* sender)
 {
-	CCLOG("exit");
-
 	SimpleAudioEngine::getInstance()->playEffect(CLICK_SOUND_EFFECT);
 	Director::getInstance()->end();
 }

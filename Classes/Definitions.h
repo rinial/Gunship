@@ -81,7 +81,7 @@
 #define GUNSHIP_BOUNCINESS 1
 
 // For asteroids
-#define ASTEROIDS_SPARCITY 0.5
+#define ASTEROIDS_SPARCITY 0.4
 #define ASTEROID_MASS 5
 #define ASTEROID_BOUNCINESS 1
 #define ASTEROID_MAX_SPEED 0.08 // based on screen width

@@ -72,6 +72,22 @@ bool GameScene::init()
 	gameTimeLabel_->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_UI_SHADOW_SIZE);
 	this->addChild(gameTimeLabel_, Z_LEVEL_UI);
 
+	//// Set labels for controls
+	//// Menu
+	//auto menuLabel = Label::createWithTTF("[ ESC ] Menu", MAIN_FONT, GAME_UI_FONT_SIZE);
+	//menuLabel->setPosition(ORIGIN + menuLabel->getContentSize() / 2 + Vec2(scoreLeftOffset, scoreTopOffset));
+	//menuLabel->setColor(GAME_UI_COLOR);
+	//menuLabel->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_UI_SHADOW_SIZE);
+	//this->addChild(menuLabel, Z_LEVEL_UI);
+	//// Retry
+	//auto retryLabel = Label::createWithTTF("[ R ] Retry", MAIN_FONT, GAME_UI_FONT_SIZE);
+	//retryLabel->setPosition(
+	//	ORIGIN.x + V_SIZE.width - retryLabel->getContentSize().width / 2 - timeRightOffset,
+	//	ORIGIN.y + retryLabel->getContentSize().height / 2 + timeTopOffset);
+	//retryLabel->setColor(GAME_UI_COLOR);
+	//retryLabel->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_UI_SHADOW_SIZE);
+	//this->addChild(retryLabel, Z_LEVEL_UI);
+
 	// Create physics world
 	sceneWorld_ = std::make_unique<PhysWorld>(ORIGIN - PARTITIONS_OUTSIDE_OFFSET * V_SIZE, V_SIZE * (1 + 2 * PARTITIONS_OUTSIDE_OFFSET));
 
@@ -131,7 +147,7 @@ bool GameScene::init()
 		const auto center = ORIGIN + (Vec2(column, row) + Vec2(0.5, 0.5)) * cellSide;
 
 		// Check if cell is ok (not near center)
-		if (std::abs(CENTER_X - center.x) < cellSide / 2 + gunshipSize.width / 2 ||
+		if (std::abs(CENTER_X - center.x) < cellSide / 2 + gunshipSize.width / 2 &&
 			std::abs(CENTER_Y - center.y) < cellSide / 2 + gunshipSize.height / 2)
 			continue;
 
@@ -219,13 +235,22 @@ void GameScene::continueToGameOver(float dT)
 }
 
 // Go to main menu scene
-void GameScene::continueToMenu(float dT)
+void GameScene::goToMenu()
 {
 	beforeLeavingScene(); // Stops schedules
 
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(MENU_BACKGROUND_MUSIC, true);
 
 	const auto scene = MenuScene::createScene();
+	Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
+}
+
+// Go to game scene (retry)
+void GameScene::retry()
+{
+	beforeLeavingScene(); // Stops schedules
+
+	const auto scene = GameScene::createScene();
 	Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
 }
 
@@ -247,9 +272,17 @@ void GameScene::onMouseMove(EventMouse* event)
 // Handle keyboard events
 void GameScene::onKeyPressed(const EventKeyboard::KeyCode keyCode, Event* event)
 {
-	// Go back to menu
-	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE)
-		continueToMenu(0);
+	switch(keyCode)
+	{
+	case EventKeyboard::KeyCode::KEY_ESCAPE:
+		goToMenu();
+		break;
+	case EventKeyboard::KeyCode::KEY_R:
+		retry();
+		break;
+	default:
+		break;
+	}
 }
 void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {

@@ -128,8 +128,6 @@ bool GameOverScene::init()
 // Retry the game
 void GameOverScene::menuRetryCallback(cocos2d::Ref* sender)
 {
-	CCLOG("restart");
-
 	SimpleAudioEngine::getInstance()->playEffect(CLICK_SOUND_EFFECT);
 	const auto scene = GameScene::createScene();
 	Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
@@ -138,8 +136,6 @@ void GameOverScene::menuRetryCallback(cocos2d::Ref* sender)
 // Returns to menu
 void GameOverScene::menuMenuCallback(cocos2d::Ref* sender)
 {
-	CCLOG("back to menu");
-
 	SimpleAudioEngine::getInstance()->playEffect(CLICK_SOUND_EFFECT);
 	const auto scene = MenuScene::createScene();
 	Director::getInstance()->replaceScene(SCENE_TRANSITION(scene));
@@ -148,8 +144,6 @@ void GameOverScene::menuMenuCallback(cocos2d::Ref* sender)
 // Exits the game
 void GameOverScene::menuExitCallback(cocos2d::Ref* sender)
 {
-	CCLOG("exit");
-
 	SimpleAudioEngine::getInstance()->playEffect(CLICK_SOUND_EFFECT);
 	Director::getInstance()->end();
 }
