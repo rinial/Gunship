@@ -11,6 +11,9 @@ public:
 	// Set the color of laser ball
 	void setColor(const cocos2d::Color3B& color);
 
+	// Disable particles
+	virtual void setActive(bool active) override;
+
 	// Constructors
 	explicit LaserBall(const cocos2d::Vec2& pos, const cocos2d::Vec2& speed = cocos2d::Vec2::ZERO);
 	LaserBall(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement);
@@ -29,6 +32,7 @@ protected:
 
 private:
 	cocos2d::Sprite* laserBall_;
+	cocos2d::ParticleSystemQuad* tail_;
 };
 
 #endif // __LASER_BALL_H__

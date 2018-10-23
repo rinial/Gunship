@@ -85,6 +85,9 @@ private:
 	bool downPressed_ = false;
 	float xAxis_ = 0.0f;
 	float yAxis_ = 0.0f;
+
+	// Particles for cursor
+	cocos2d::ParticleSystemQuad* cursor_;
 };
 
 #endif // __GAME_SCENE_H__

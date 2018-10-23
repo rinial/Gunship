@@ -31,6 +31,11 @@ void Gunship::lookInDirection(const Vec2& direction)
 void Gunship::accelerate(const Vec2& direction)
 {
 	getMovement()->setAcceleration(direction.getNormalized() * GUNSHIP_ACCELERATION);
+
+	if (direction.isZero())
+		boosters_->pauseEmissions();
+	else
+		boosters_->resumeEmissions();
 }
 
 // Shooting functions
@@ -46,9 +51,6 @@ void Gunship::shoot()
 {
 	if (!sceneNode_)
 		return;
-
-	// TODO change to other sound effect for powerful shots
-	// TODO powerful = weird movement
 
 	sinceLastShot_ = 0;
 	++shotCount_;
@@ -67,7 +69,7 @@ void Gunship::shoot()
 	laserBall->setMovement(!isPowerShot ?
 		std::make_unique<PhysMovement>(laserSpeed) :
 		std::make_unique<PhysLeftRightMovement>(laserSpeed, CC_DEGREES_TO_RADIANS(POWER_SHOT_ANGULAR_SPEED), POWER_SHOT_CURVE_DURATION, shotCount_ % (2 * POWER_SHOT_INDEX) == 0 ? 1 : -1));
-	laserBall->setColor(!isPowerShot ? Color3B::WHITE : LASER_BALL_POWERFUL_COLOR);
+	laserBall->setColor(!isPowerShot ? LASER_BALL_NORMAL_COLOR : LASER_BALL_POWERFUL_COLOR);
 }
 
 // Spawn projectiles
@@ -125,13 +127,18 @@ Gunship::Gunship(const Vec2& pos, const float laserSpeed) : GameObject(pos, GUNS
 	hull_ = Sprite::create();
 	hull_->initWithFile(GUNSHIP_SPRITE);
 	hull_->setPosition(0, 0);
+	rootNode_->addChild(hull_, 0);
 
 	gun_ = Sprite::create();
 	gun_->initWithFile(GUN_SPRITE);
 	lookInDirection(Vec2(1, 0)); // Initial gun direction
-
-	rootNode_->addChild(hull_, 0);
 	rootNode_->addChild(gun_, -1); // gun is below the hull
+
+	// Create particle
+	boosters_ = ParticleSystemQuad::create(GUNSHIP_BOOSTERS_PARTICLES); 
+	boosters_->setPosition(Vec2::ZERO);
+	boosters_->pauseEmissions();
+	rootNode_->addChild(boosters_, -2);
 
 	addCollider(std::make_unique<PhysCircleCollider>(hull_->getContentSize().width / 2, GUNSHIP_BITMASKS));
 	setMovement(std::make_unique<PhysMovement>());

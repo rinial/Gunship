@@ -59,6 +59,14 @@
 #define TIME_TICK_SOUND_EFFECT "audio/timeTick.wav"
 #define WIN_SOUND_EFFECT "audio/win.wav"
 
+// For particles
+#define STARS_PARTICLES "particles/stars.plist"
+#define LASER_BALL_DESTROYED_PARTICLES "particles/spark.plist"
+#define LASER_BALL_TRAIL_PARTICLES "particles/laserTrail.plist"
+#define GUNSHIP_BOOSTERS_PARTICLES "particles/boosters.plist"
+#define ASTEROID_BREAK_PARTICLES "particles/wreck.plist"
+#define CURSOR_PARTICLES "particles/cursor.plist"
+
 // For scene transitions and durations
 #define SCENE_TRANSITION_TIME 0.5
 #define SCENE_TRANSITION_TYPE TransitionCrossFade
@@ -68,14 +76,15 @@
 
 // Z levels
 #define Z_LEVEL_BACKGROUND	0
-#define Z_LEVEL_TARGET		1
-#define Z_LEVEL_PROJECTILE	2
-#define Z_LEVEL_GUNSHIP		3
-#define Z_LEVEL_UI			4
+#define Z_LEVEL_STARS	    1
+#define Z_LEVEL_TARGET		2
+#define Z_LEVEL_PROJECTILE	3
+#define Z_LEVEL_GUNSHIP		4
+#define Z_LEVEL_UI			5
 
 // For gunship
 #define SHOT_INTERVAL 0.4
-#define POWER_SHOT_INDEX 5
+#define POWER_SHOT_INDEX 4
 #define POWER_SHOT_SPEED_K 1.2
 #define POWER_SHOT_ANGULAR_SPEED 400
 #define POWER_SHOT_CURVE_DURATION 0.5
@@ -86,6 +95,7 @@
 #define LASER_BALL_BOUNCINESS 1
 #define LASER_BALL_LIFE_TIME 5
 #define LASER_BALL_SPAWN_DISTANCE 0.8 // based on cannon size
+#define LASER_BALL_NORMAL_COLOR Color3B::WHITE
 #define LASER_BALL_POWERFUL_COLOR Color3B(40, 210, 35)
 #define LASER_BALL_START_OPACITY 255
 
@@ -100,6 +110,7 @@
 #define ASTEROID_MIN_SCALE 0.8
 #define ASTEROID_MAX_SCALE 1.6
 #define ASTEROID_HP 2
+#define ASTEROIDS_CURVED_COLOR Color3B(255, 200, 200)
 
 // For physics
 #define PHYSICS_UPDATE_INTERVAL (1.0 / 60)
@@ -127,5 +138,8 @@
 #define LASER_BALL_BITMASKS COLLISION_BITMASK_PROJECTILE, \
 	                        COLLISION_BITMASK_EDGE, \
                             COLLISION_BITMASK_ASTEROID
+
+// Other
+#define TIME_OUT_TIMER 5
 
 #endif // __DEFINITIONS_H__

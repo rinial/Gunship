@@ -39,7 +39,6 @@ void GameObject::setPosition(const Vec2& pos)
 void GameObject::setActive(const bool active)
 {
 	PhysBody::setActive(active);
-	rootNode_->setVisible(active);
 
 	// Send event
 	if (active)

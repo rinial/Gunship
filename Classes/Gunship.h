@@ -55,6 +55,9 @@ private:
 
 	// Pool of laser balls
 	std::queue<LaserBall*> laserBallsPool_;
+
+	// Particles for boosters
+	cocos2d::ParticleSystemQuad* boosters_;
 };
 
 #endif // __GUNSHIP_H__

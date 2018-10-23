@@ -85,6 +85,18 @@ bool GameScene::init()
 	//retryLabel->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_UI_SHADOW_SIZE);
 	//this->addChild(retryLabel, Z_LEVEL_UI);
 
+	// Create galaxy particles
+	auto galaxy = ParticleSystemQuad::create(STARS_PARTICLES); 
+	galaxy->setPosition(CENTER);
+	this->addChild(galaxy, Z_LEVEL_STARS);
+
+	// Create cursor particles
+	cursor_ = ParticleSystemQuad::create(CURSOR_PARTICLES);
+	cursor_->setPosition(CENTER);
+	this->addChild(cursor_, Z_LEVEL_UI);
+	// Hide default cursor
+	Director::getInstance()->getOpenGLView()->setCursorVisible(false);
+
 	// Create physics world
 	sceneWorld_ = std::make_unique<PhysWorld>(ORIGIN - PARTITIONS_OUTSIDE_OFFSET * V_SIZE, V_SIZE * (1 + 2 * PARTITIONS_OUTSIDE_OFFSET));
 
@@ -146,14 +158,18 @@ bool GameScene::init()
 		auto speed = Vec2::ONE.rotateByAngle(Vec2::ZERO, rand_0_1() * CC_DEGREES_TO_RADIANS(360)) // random direction
 			* rand_0_1() * ASTEROID_MAX_SPEED * V_SIZE.width / (relativeScale * relativeScale);  // random magnitude
 		std::unique_ptr<PhysMovement> movement;
-		if (rand_0_1() > 0.5)
+		Color3B color;
+		if (rand_0_1() > 0.5) {
 			movement = std::make_unique<PhysMovement>(speed);
+			color = Color3B::WHITE;
+		}
 		else {
 			auto angularSpeed = rand_minus1_1() * CC_DEGREES_TO_RADIANS(ASTEROID_MAX_ANGULAR_SPEED);
 			auto curveTime = ASTEROID_MIN_CURVE_TIME + rand_0_1() * (ASTEROID_MAX_CURVE_TIME - ASTEROID_MIN_CURVE_TIME);
 			movement = std::make_unique<PhysLeftRightMovement>(speed, angularSpeed, curveTime);
+			color = ASTEROIDS_CURVED_COLOR;
 		}
-		auto asteroid = std::make_unique<Asteroid>(position, std::move(movement), scale);
+		auto asteroid = std::make_unique<Asteroid>(position, std::move(movement), scale, color);
 		asteroid->addListener(this); // start listening to target events
 		asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
 		sceneWorld_->addBody(std::move(asteroid));
@@ -173,7 +189,7 @@ bool GameScene::init()
 	keyboardListener->onKeyReleased = CC_CALLBACK_2(GameScene::onKeyReleased, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
-	// We start all schedule only after scene transition is finished
+	// We start all schedules only after scene transition is finished
 	this->scheduleOnce(schedule_selector(GameScene::startSchedules), SCENE_TRANSITION_TIME);
 
 	return true;
@@ -191,6 +207,10 @@ GameScene::~GameScene()
 void GameScene::beforeLeavingScene()
 {
 	unscheduleAllCallbacks();
+
+	// Show default cursor
+	Director::getInstance()->getOpenGLView()->setCursorVisible(true);
+
 	// memory for sceneWorld_ will be freed automatically
 }
 
@@ -236,6 +256,7 @@ void GameScene::onMouseUp(EventMouse* event)
 void GameScene::onMouseMove(EventMouse* event)
 {
 	mouseLocation_ = event->getLocationInView();
+	cursor_->setPosition(mouseLocation_);
 }
 
 // Handle keyboard events
@@ -332,7 +353,7 @@ void GameScene::incrementGameTime(float dT)
 		playing_ = false;
 		this->scheduleOnce(schedule_selector(GameScene::continueToGameOver), GAME_OVER_SCENE_TRANSITION_DELAY);
 	}
-	else if (gameTime_ >= maxGameTime_ - 10)
+	else if (gameTime_ >= maxGameTime_ - TIME_OUT_TIMER)
 		// Play sound
 		SimpleAudioEngine::getInstance()->playEffect(TIME_TICK_SOUND_EFFECT);
 }

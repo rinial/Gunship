@@ -10,8 +10,8 @@ class Asteroid : public Target
 
 public:
 	// Constructors
-	explicit Asteroid(const cocos2d::Vec2& pos, const float& scale = 1);
-	Asteroid(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement, const float& scale = 1);
+	explicit Asteroid(const cocos2d::Vec2& pos, const float& scale = 1, const cocos2d::Color3B& color = cocos2d::Color3B::WHITE);
+	Asteroid(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement, const float& scale = 1, const cocos2d::Color3B& color = cocos2d::Color3B::WHITE);
 	// Important for cleaning memory using base class pointer
 	virtual ~Asteroid();
 
@@ -24,6 +24,9 @@ private:
 
 	// Number of times asteroid has to be hit
 	unsigned int healthPoints_;
+
+	// Color of the sprite
+	cocos2d::Color3B color_;
 };
 
 #endif // __ASTEROID_H__

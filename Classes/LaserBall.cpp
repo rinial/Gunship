@@ -12,6 +12,19 @@ USING_NS_CC;
 void LaserBall::setColor(const Color3B& color)
 {
 	laserBall_->setColor(color);
+	tail_->setStartColor(Color4F(color));
+}
+
+// Disable particles
+void LaserBall::setActive(const bool active)
+{
+	laserBall_->setVisible(active);
+	if (active)
+		tail_->resumeEmissions();
+	else
+		tail_->pauseEmissions();
+
+	Projectile::setActive(active);
 }
 
 // Constructors
@@ -20,9 +33,13 @@ LaserBall::LaserBall(const Vec2& pos, std::unique_ptr<PhysMovement> movement) : 
 {
 	laserBall_ = Sprite::create();
 	laserBall_->initWithFile(LASER_BALL_SPRITE);
-	laserBall_->setPosition(0, 0);
-
+	laserBall_->setPosition(Vec2::ZERO);
 	rootNode_->addChild(laserBall_);
+	
+	// Create particle tail
+	tail_ = ParticleSystemQuad::create(LASER_BALL_TRAIL_PARTICLES);
+	tail_->setPosition(Vec2::ZERO);
+	rootNode_->addChild(tail_, -1);
 
 	addCollider(std::make_unique<PhysCircleCollider>(laserBall_->getContentSize().width / 2, LASER_BALL_BITMASKS));
 	setMovement(std::move(movement));
@@ -56,6 +73,14 @@ void LaserBall::onHitTarget(Target* target, const Vec2& toTarget)
 {
 	// Play sound
 	SimpleAudioEngine::getInstance()->playEffect(LASER_HIT_SOUND_EFFECT);
+
+	if (sceneNode_) {
+		// Create particle
+		auto sparks = ParticleSystemQuad::create(LASER_BALL_DESTROYED_PARTICLES);
+		sparks->setPosition(getPosition());
+		sparks->setStartColor(tail_->getStartColor());
+		sceneNode_->addChild(sparks, rootNode_->getLocalZOrder());
+	}
 
 	target->onBeingHit(this, -toTarget);
 	setActive(false); // event will be send and gunship will handle it to pool the laserball
