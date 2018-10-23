@@ -35,7 +35,7 @@ bool GameScene::init()
 
 	// TODO read from file
 	maxGameTime_ = 20;
-	maxScore_ = 10; // number of targets
+	maxScore_ = 20; // number of targets
 	unsigned int projectileSpeed = 100; // TODO use it
 
 	// Background music
@@ -73,7 +73,7 @@ bool GameScene::init()
 	this->addChild(gameTimeLabel_, Z_LEVEL_UI);
 
 	// Create physics world
-	sceneWorld_ = std::make_unique<PhysWorld>();
+	sceneWorld_ = std::make_unique<PhysWorld>(ORIGIN - PARTITIONS_OUTSIDE_OFFSET * V_SIZE, V_SIZE * (1 + 2 * PARTITIONS_OUTSIDE_OFFSET));
 
 	// Create edge around screen
 	auto edgeBody = std::make_unique<PhysBody>(CENTER);
@@ -126,18 +126,21 @@ bool GameScene::init()
 	// Create all asteroids in random positions with random speeds and scales
 	unsigned int placed = 0;
 	for(unsigned int i = 0; i < nCells && placed < maxScore_; ++i) {
-		const auto center = (Vec2(cellIndices[i] % nX, cellIndices[i] / nX) + Vec2(0.5, 0.5)) * cellSide;
+		const auto column = cellIndices[i] % nX;
+		const auto row = cellIndices[i] / nX;
+		const auto center = ORIGIN + (Vec2(column, row) + Vec2(0.5, 0.5)) * cellSide;
 
 		// Check if cell is ok (not near center)
 		if (std::abs(CENTER_X - center.x) < cellSide / 2 + gunshipSize.width / 2 ||
 			std::abs(CENTER_Y - center.y) < cellSide / 2 + gunshipSize.height / 2)
 			continue;
 
-		auto scale = (ASTEROID_MIN_SCALE + rand_0_1() * (ASTEROID_MAX_SCALE - ASTEROID_MIN_SCALE)) * extraScale;
+		auto const relativeScale = (ASTEROID_MIN_SCALE + rand_0_1() * (ASTEROID_MAX_SCALE - ASTEROID_MIN_SCALE));
+		auto scale = relativeScale * extraScale;
 		const auto size = asteroidSize * scale;
-		auto position = center + size / 2 + Vec2((cellSide - size.width) * rand_0_1(), (cellSide - size.height) * rand_0_1());
+		auto position = center + Vec2((cellSide - size.width) * rand_minus1_1(), (cellSide - size.height) * rand_minus1_1()) / 2;
 		auto speed = Vec2::ONE.rotateByAngle(Vec2::ZERO, rand_0_1() * CC_DEGREES_TO_RADIANS(360)) // random direction
-			* rand_0_1() * ASTEROID_MAX_SPEED * V_SIZE.width / (scale * scale);                  // random magnitude
+			* rand_0_1() * ASTEROID_MAX_SPEED * V_SIZE.width / (relativeScale * relativeScale);  // random magnitude
 		std::unique_ptr<PhysMovement> movement;
 		if (rand_0_1() > 0.5)
 			movement = std::make_unique<PhysMovement>(speed);
