@@ -8,9 +8,15 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 
+// Set the color of laser ball
+void LaserBall::setColor(const Color3B& color)
+{
+	laserBall_->setColor(color);
+}
+
 // Constructors
-LaserBall::LaserBall(const cocos2d::Vec2& pos, const cocos2d::Vec2& speed) : LaserBall(pos, std::make_unique<PhysMovement>(speed)) {}
-LaserBall::LaserBall(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement) : Projectile(pos, LASER_BALL_MASS, LASER_BALL_BOUNCINESS)
+LaserBall::LaserBall(const Vec2& pos, const Vec2& speed) : LaserBall(pos, std::make_unique<PhysMovement>(speed)) {}
+LaserBall::LaserBall(const Vec2& pos, std::unique_ptr<PhysMovement> movement) : Projectile(pos, LASER_BALL_MASS, LASER_BALL_BOUNCINESS)
 {
 	laserBall_ = Sprite::create();
 	laserBall_->initWithFile(LASER_BALL_SPRITE);
@@ -33,12 +39,25 @@ void LaserBall::onHit(const PhysContact& contact)
 	Projectile::onHit(contact);
 }
 
+// Check lifetime and destroy if it's too long
+void LaserBall::step(const float dT)
+{
+	Projectile::step(dT);
+
+	if (getLifeTime() > LASER_BALL_LIFE_TIME)
+		// destroy();
+		setActive(false);
+	else
+		laserBall_->setOpacity(std::pow((LASER_BALL_LIFE_TIME - getLifeTime()) / LASER_BALL_LIFE_TIME, 0.3) * LASER_BALL_START_OPACITY);
+}
+
 // Called on hitting (overlapping) a Target
 void LaserBall::onHitTarget(Target* target, const Vec2& toTarget)
 {
 	// Play sound
 	SimpleAudioEngine::getInstance()->playEffect(LASER_HIT_SOUND_EFFECT);
 
-	// TODO pool somehow?
-	Projectile::onHitTarget(target, toTarget);
+	target->onBeingHit(this, -toTarget);
+	setActive(false); // event will be send and gunship will handle it to pool the laserball
+	//destroy();
 }

@@ -77,11 +77,6 @@ private:
 	// Spaceship
 	// Just a pointer, PhysWorld handles its memory
 	class Gunship* gunship_ = nullptr;
-
-	// TODO move to gunship
-	// Pool of all projectiles
-	// Just pointers, PhysWorld handles their memory
-	std::queue<class Projectile*> projectilesPool_;
 };
 
 #endif // __GAME_SCENE_H__

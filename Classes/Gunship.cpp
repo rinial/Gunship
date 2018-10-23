@@ -47,7 +47,7 @@ void Gunship::shoot()
 	sinceLastShot_ = 0;
 	++shotCount_;
 
-	auto laserLocation = getPosition() + gunDirection_ * gun_->getContentSize().width * LASER_BALL_SPAWN_DISTANCE;
+	const auto laserLocation = getPosition() + gunDirection_ * gun_->getContentSize().width * LASER_BALL_SPAWN_DISTANCE;
 
 	// "Power" shot is a shot with different curved movement
 	const auto isPowerShot = shotCount_ % POWER_SHOT_INDEX == 0;
@@ -55,21 +55,13 @@ void Gunship::shoot()
 	// Play sound
 	SimpleAudioEngine::getInstance()->playEffect(!isPowerShot ? SHOOT_NORMAL_SOUND_EFFECT : SHOOT_POWERFUL_SOUND_EFFECT);
 
+	// Spawns new or takes from pool
+	auto laserBall = spawnLaserBall(laserLocation);
 	auto laserSpeed = gunDirection_ * laserSpeed_ * (!isPowerShot ? 1 : POWER_SHOT_SPEED_K);
-	auto laserBall = std::make_unique<LaserBall>(laserLocation, !isPowerShot ?
+	laserBall->setMovement(!isPowerShot ?
 		std::make_unique<PhysMovement>(laserSpeed) :
 		std::make_unique<PhysLeftRightMovement>(laserSpeed, CC_DEGREES_TO_RADIANS(POWER_SHOT_ANGULAR_SPEED), POWER_SHOT_CURVE_DURATION, shotCount_ % (2 * POWER_SHOT_INDEX) == 0 ? 1 : -1));
-	laserBall->addToScene(sceneNode_, Z_LEVEL_PROJECTILE);
-	getWorld()->addBody(std::move(laserBall));
-}
-
-// Adds game object to scene
-// Also create projectiles for future shooting
-void Gunship::addToScene(Scene* scene, const int zLevel)
-{
-	GameObject::addToScene(scene, zLevel);
-
-	// TODO create projectiles for future use
+	laserBall->setColor(!isPowerShot ? Color3B::WHITE : LASER_BALL_POWERFUL_COLOR);
 }
 
 // Spawn projectiles
@@ -80,6 +72,40 @@ void Gunship::step(const float dT)
 	sinceLastShot_ += dT;
 	if (shooting_ && sinceLastShot_ >= SHOT_INTERVAL)
 		shoot();
+}
+
+// Handle event from other game object
+// Find a deactivated projectile and add it to pool
+void Gunship::onGameObjectDeactivated(GameObject* sender)
+{
+	const auto laserBall = dynamic_cast<LaserBall*>(sender);
+	if (laserBall)
+		laserBallsPool_.push(laserBall);
+}
+
+// Pool a laser ball or create a new one
+LaserBall* Gunship::spawnLaserBall(const Vec2& pos)
+{
+	LaserBall* laserBall = nullptr;
+
+	// Pool
+	if(!laserBallsPool_.empty()) {
+		laserBall = laserBallsPool_.front();
+		laserBallsPool_.pop();
+		laserBall->setPosition(pos);
+		laserBall->setActive(true);
+		laserBall->reset(); // reset life time
+	}
+	// Create new
+	else {
+		auto newLaserBall = std::make_unique<LaserBall>(pos);
+		newLaserBall->addToScene(sceneNode_, Z_LEVEL_PROJECTILE);
+		newLaserBall->addListener(this);
+		laserBall = newLaserBall.get();
+		getWorld()->addBody(std::move(newLaserBall));
+	}
+
+	return laserBall;
 }
 
 // Constructor

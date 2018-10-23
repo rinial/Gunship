@@ -8,10 +8,14 @@ class GameObject;
 class GameObjectEventListener
 {
 public:
-	// Called from GameObject when it is destroyed
+	// Called when GameObject is destroyed
 	virtual void onGameObjectBeginDestroy(GameObject* sender) {}
 
-	// Can add other events here
+	// Called when GameObject is activated
+	virtual void onGameObjectActivated(GameObject* sender) {}
+
+	// Called when GameObject is deactivated
+	virtual void onGameObjectDeactivated(GameObject* sender) {}
 };
 
 #endif // __CP_GAME_OBJECT_EVENT_LISTENER_H__

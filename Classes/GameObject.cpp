@@ -4,6 +4,14 @@
 
 USING_NS_CC;
 
+// Increment life time
+void GameObject::step(const float dT)
+{
+	PhysBody::step(dT);
+
+	lifeTime_ += dT;
+}
+
 // Add/remove listeners
 void GameObject::addListener(GameObjectEventListener* listener)
 {
@@ -32,6 +40,14 @@ void GameObject::setActive(const bool active)
 {
 	PhysBody::setActive(active);
 	rootNode_->setVisible(active);
+
+	// Send event
+	if (active)
+		for (auto listener : listeners_)
+			listener->onGameObjectActivated(this);
+	else
+		for (auto listener : listeners_)
+			listener->onGameObjectDeactivated(this);
 }
 
 // Adds game object to scene

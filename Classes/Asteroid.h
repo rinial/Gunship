@@ -15,8 +15,15 @@ public:
 	// Important for cleaning memory using base class pointer
 	virtual ~Asteroid();
 
+protected:
+	// Called on being hit (overlaped) by a Projectile
+	virtual void onBeingHit(Projectile* projectile, const cocos2d::Vec2& toProjectile) override;
+
 private:
 	cocos2d::Sprite* asteroid_;
+
+	// Number of times asteroid has to be hit
+	unsigned int healthPoints_;
 };
 
 #endif // __ASTEROID_H__

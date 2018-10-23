@@ -12,6 +12,9 @@ class GameObjectEventListener;
 class GameObject : public PhysBody
 {
 public:
+	// Increment life time
+	virtual void step(float dT) override;
+
 	// Add/remove listeners
 	void addListener(GameObjectEventListener* listener);
 	void removeListener(GameObjectEventListener* listener);
@@ -26,6 +29,12 @@ public:
 
 	// Adds game object to scene
 	virtual void addToScene(cocos2d::Scene* scene, int zLevel = 0);
+
+	// Return life time
+	float getLifeTime() const { return lifeTime_; }
+
+	// Reset game object to initial state
+	virtual void reset() { lifeTime_ = 0; }
 
 	// Destroy this object, calls onDestroy first for children to add functionality
 	void destroy();
@@ -47,6 +56,9 @@ protected:
 private:
 	// Event listeners
 	std::unordered_set<GameObjectEventListener*> listeners_;
+
+	// Life time of this object
+	float lifeTime_ = 0;
 };
 
 #endif // __GAME_OBJECT_H__

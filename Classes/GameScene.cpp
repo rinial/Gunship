@@ -15,9 +15,6 @@ using namespace CocosDenshion;
 
 USING_NS_CC;
 
-// TODO move to spaceship?
-constexpr unsigned int maxNumProjectiles = PROJECTILE_LIFE_TIME / SHOT_INTERVAL + 1;
-
 Scene* GameScene::createScene()
 {
 	return GameScene::create();
@@ -36,7 +33,7 @@ bool GameScene::init()
 	// TODO read from file
 	maxGameTime_ = 20;
 	maxScore_ = 20; // number of targets
-	unsigned int projectileSpeed = 300;
+	unsigned int projectileSpeed = 500;
 
 	// Background music
 	SimpleAudioEngine::getInstance()->playBackgroundMusic(GAME_BACKGROUND_MUSIC, true);
@@ -105,15 +102,6 @@ bool GameScene::init()
 	gunship->addToScene(this, Z_LEVEL_GUNSHIP); // add cocos2d node to scene
 	sceneWorld_->addBody(std::move(gunship)); // PhysWorld controls memory
 
-	// TODO move to gunship
-	// Add all possible projectiles to pool to avoid FPS drops on creating new ones
-	for (unsigned int i = 0; i < maxNumProjectiles; ++i) {
-		// TODO auto projectile = std::make_unique<Projectile>(...);
-		// TODO projectilesPool_.push(projectile.get()); // save pointer for easy access
-		// TODO projectile->addToScene(this, Z_LEVEL_PROJECTILE); // add cocos2d node to scene
-		// TODO sceneWorld_->addBody(std::move(projectile)); // PhysWorld controls memory
-	}
-
 	// We create it just to find normal size
 	auto tempGunship = Sprite::create();
 	tempGunship->initWithFile(GUNSHIP_SPRITE);
@@ -171,26 +159,6 @@ bool GameScene::init()
 		sceneWorld_->addBody(std::move(asteroid));
 		++placed;
 	}
-	// Create all asteroids in random positions with random speeds and scales
-	//for (unsigned int i = placed; i < maxScore_; ++i) {
-	//	// TODO !! make sure they dont interfere with each other and leave space for gunship in center
-	//	auto position = ORIGIN + maxAsteroidSize / 2 + Vec2((V_SIZE.width - maxAsteroidSize.width) * rand_0_1(), (V_SIZE.height - maxAsteroidSize.height) * rand_0_1()); 
-	//	auto scale = (ASTEROID_MIN_SCALE + rand_0_1() * (ASTEROID_MAX_SCALE - ASTEROID_MIN_SCALE)) * extraScale;
-	//	auto speed = Vec2::ONE.rotateByAngle(Vec2::ZERO, rand_0_1() * CC_DEGREES_TO_RADIANS(360)) // random direction
-	//	             * rand_0_1() * ASTEROID_MAX_SPEED * V_SIZE.width / (scale * scale);         // random magnitude
-	//	std::unique_ptr<PhysMovement> movement;
-	//	if (rand_0_1() > 0.5)
-	//		movement = std::make_unique<PhysMovement>(speed);
-	//	else {
-	//		auto angularSpeed = rand_minus1_1() * CC_DEGREES_TO_RADIANS(ASTEROID_MAX_ANGULAR_SPEED);
-	//		auto curveTime = ASTEROID_MIN_CURVE_TIME + rand_0_1() * (ASTEROID_MAX_CURVE_TIME - ASTEROID_MIN_CURVE_TIME);
-	//		movement = std::make_unique<PhysLeftRightMovement>(speed, angularSpeed, curveTime);
-	//	}
-	//	auto asteroid = std::make_unique<Asteroid>(position, std::move(movement), scale);
-	//	asteroid->addListener(this); // start listening to target events
-	//	asteroid->addToScene(this, Z_LEVEL_TARGET); // add cocos2d node to scene
-	//	sceneWorld_->addBody(std::move(asteroid));
-	//}
 
 	// Start listening to mouse
 	auto mouseListener = EventListenerMouse::create();

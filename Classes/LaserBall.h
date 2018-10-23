@@ -8,14 +8,20 @@
 class LaserBall : public Projectile
 {
 public:
+	// Set the color of laser ball
+	void setColor(const cocos2d::Color3B& color);
+
 	// Constructors
-	LaserBall(const cocos2d::Vec2& pos, const cocos2d::Vec2& speed);
+	explicit LaserBall(const cocos2d::Vec2& pos, const cocos2d::Vec2& speed = cocos2d::Vec2::ZERO);
 	LaserBall(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement);
 	// Important for cleaning memory using base class pointer
 	virtual ~LaserBall();
 
 	// Called on hits
 	virtual void onHit(const PhysContact& contact) override;
+
+	// Check lifetime and destroy if it's too long
+	virtual void step(float dT) override;
 
 protected:
 	// Called on hitting (overlapping) a Target

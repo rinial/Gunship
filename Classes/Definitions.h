@@ -74,9 +74,8 @@
 #define Z_LEVEL_UI			4
 
 // For gunship
-#define SHOT_INTERVAL 0.5
-#define PROJECTILE_LIFE_TIME 3 // TODO delete?
-#define POWER_SHOT_INDEX 4
+#define SHOT_INTERVAL 0.4
+#define POWER_SHOT_INDEX 5
 #define POWER_SHOT_SPEED_K 1.2
 #define POWER_SHOT_ANGULAR_SPEED 400
 #define POWER_SHOT_CURVE_DURATION 0.5
@@ -84,7 +83,10 @@
 #define GUNSHIP_BOUNCINESS 1
 #define LASER_BALL_MASS 0.8
 #define LASER_BALL_BOUNCINESS 1
+#define LASER_BALL_LIFE_TIME 5
 #define LASER_BALL_SPAWN_DISTANCE 0.8 // based on cannon size
+#define LASER_BALL_POWERFUL_COLOR Color3B(40, 210, 35)
+#define LASER_BALL_START_OPACITY 255
 
 // For asteroids
 #define ASTEROIDS_SPARCITY 0.4
@@ -96,6 +98,7 @@
 #define ASTEROID_MAX_CURVE_TIME 10
 #define ASTEROID_MIN_SCALE 0.8
 #define ASTEROID_MAX_SCALE 1.6
+#define ASTEROID_HP 2
 
 // For physics
 #define PHYSICS_UPDATE_INTERVAL (1.0 / 60)

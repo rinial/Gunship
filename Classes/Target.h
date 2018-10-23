@@ -8,8 +8,6 @@
 // It lacks functionality at this stage of the project but may be needed more later
 class Target : public GameObject
 {
-	// Projectile can call onBeingHit
-	friend class Projectile;
 
 public:
 	// Constructor
@@ -20,9 +18,8 @@ public:
 	// We don't override onOverlap
 	// The idea is to let Projectile kill target, not to let them both decide what happens
 
-protected:
 	// Called on being hit (overlaped) by a Projectile
-	virtual void onBeingHit(Projectile* projectile, const cocos2d::Vec2& toProjectile);
+	virtual void onBeingHit(class Projectile* projectile, const cocos2d::Vec2& toProjectile);
 };
 
 #endif // __TARGET_H__
