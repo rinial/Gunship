@@ -30,9 +30,9 @@ private:
 	// Go to game over scene
 	void continueToGameOver(float dT);
 	// Go to main menu scene
-	void goToMenu();
+	void menuCallback(cocos2d::Ref* sender = nullptr);
 	// Go to game scene (retry)
-	void retry();
+	void retryCallback(cocos2d::Ref* sender = nullptr);
 
 	// Handle mouse events
 	// Shoot while mouse is down

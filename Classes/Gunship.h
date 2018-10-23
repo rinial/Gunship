@@ -24,6 +24,9 @@ public:
 	void stopShooting();
 	void shoot();
 
+	// Called on hits
+	virtual void onHit(const PhysContact& contact) override;
+
 	// Spawn projectiles
 	virtual void step(float dT) override;
 

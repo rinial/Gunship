@@ -22,7 +22,12 @@ bool MenuScene::init()
 	// Background image
 	auto backSprite = Sprite::create(BACKGROUND_SPRITE);
 	backSprite->setPosition(CENTER);
-	this->addChild(backSprite);
+	this->addChild(backSprite, Z_LEVEL_BACKGROUND);
+
+	// Galaxy particles
+	auto galaxy = ParticleSystemQuad::create(STARS_PARTICLES);
+	galaxy->setPosition(CENTER);
+	this->addChild(galaxy, Z_LEVEL_STARS);
 
 	// Title image on the top right
 	auto titleSprite = Sprite::create(TITLE_SPRITE);
@@ -31,7 +36,7 @@ bool MenuScene::init()
 	titleSprite->setPosition(
 		ORIGIN.x + V_SIZE.width - titleRightOffset - titleSprite->getContentSize().width / 2, 
 		ORIGIN.y + V_SIZE.height - titleTopOffset - titleSprite->getContentSize().height / 2);
-	this->addChild(titleSprite, 1);
+	this->addChild(titleSprite, Z_LEVEL_UI);
 
 	// Menu
 	std::vector<MenuItem*> menuItems; // We will use this vector to set positions for all items later. This way adding new items is easier
@@ -47,7 +52,7 @@ bool MenuScene::init()
 	// Make sure to add/remove items here if you add/remove them elsewhere
 	auto menu = Menu::create(menuItems[0], menuItems[1], nullptr); 
 	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu, 1);
+	this->addChild(menu, Z_LEVEL_UI);
 
 	return true;
 }

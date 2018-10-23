@@ -22,6 +22,7 @@
 #define GAME_OVER_NUMBER_MIN_DELAY 0.17
 #define GAME_OVER_NUMBER_MAX_DELAY 0.55
 #define GAME_OVER_NUMBER_TICK_POWER 1.3
+#define GAME_UI_SCALE 0.8
 
 // For memory
 #define BEST_SCORE_TAG "BestScore"
@@ -50,21 +51,27 @@
 #define GAME_BACKGROUND_MUSIC "audio/bgGame.mp3"
 #define MENU_BACKGROUND_MUSIC "audio/bgMenu.wav"
 #define CLICK_SOUND_EFFECT "audio/click.wav"
-#define LASER_BOUNCE_SOUND_EFFECT "audio/laserBounce.wav"
 #define LASER_HIT_SOUND_EFFECT "audio/laserHit.wav"
-#define SCORE_TICK_SOUND_EFFECT "audio/scoreTick.wav"
+#define LASER_BOUNCE_SOUND_EFFECT "audio/laserBounce.wav"
+#define GUNSHIP_BOUNCE_SOUND_EFFECT LASER_BOUNCE_SOUND_EFFECT
+#define ASTEROID_BOUNCE_SOUND_EFFECT LASER_HIT_SOUND_EFFECT
 #define SHOOT_NORMAL_SOUND_EFFECT "audio/shootNormal.wav"
 #define SHOOT_POWERFUL_SOUND_EFFECT "audio/shootPowerful.wav"
+#define SCORE_TICK_SOUND_EFFECT "audio/scoreTick.wav"
 #define TIME_OUT_SOUND_EFFECT "audio/timeOut.wav"
 #define TIME_TICK_SOUND_EFFECT "audio/timeTick.wav"
 #define WIN_SOUND_EFFECT "audio/win.wav"
 
 // For particles
 #define STARS_PARTICLES "particles/stars.plist"
-#define LASER_BALL_DESTROYED_PARTICLES "particles/spark.plist"
+#define SPARKS_PARTICLES "particles/spark.plist"
+#define LASER_BALL_DESTROYED_PARTICLES SPARKS_PARTICLES
+#define LASER_BALL_BOUNCED_PARTICLES SPARKS_PARTICLES
 #define LASER_BALL_TRAIL_PARTICLES "particles/laserTrail.plist"
 #define GUNSHIP_BOOSTERS_PARTICLES "particles/boosters.plist"
+#define GUNSHIP_BOUNCED_PARTICLES SPARKS_PARTICLES
 #define ASTEROID_BREAK_PARTICLES "particles/wreck.plist"
+#define ASTEROID_BOUNCED_PARTICLES "particles/debris.plist"
 #define CURSOR_PARTICLES "particles/cursor.plist"
 
 // For scene transitions and durations

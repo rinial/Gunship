@@ -14,6 +14,12 @@ public:
 	// Disable particles
 	virtual void setActive(bool active) override;
 
+	// Update particle position
+	virtual void setPosition(const cocos2d::Vec2& pos) override;
+
+	// Create tail
+	virtual void addToScene(cocos2d::Scene* scene, int zLevel) override;
+
 	// Constructors
 	explicit LaserBall(const cocos2d::Vec2& pos, const cocos2d::Vec2& speed = cocos2d::Vec2::ZERO);
 	LaserBall(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement);

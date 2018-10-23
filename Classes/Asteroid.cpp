@@ -3,7 +3,26 @@
 #include "Projectile.h"
 #include "Definitions.h"
 
+#include "audio/include/SimpleAudioEngine.h"
+using namespace CocosDenshion;
+
 USING_NS_CC;
+
+// Called on hits
+void Asteroid::onHit(const PhysContact& contact)
+{
+	// Play sound
+	// SimpleAudioEngine::getInstance()->playEffect(ASTEROID_BOUNCE_SOUND_EFFECT);
+
+	if (sceneNode_) {
+		// Create particle
+		auto sparks = ParticleSystemQuad::create(ASTEROID_BOUNCED_PARTICLES);
+		sparks->setPosition(getPosition() + contact.getDirectionFrom(this) * asteroid_->getContentSize().width / 2);
+		sceneNode_->addChild(sparks, rootNode_->getLocalZOrder());
+	}
+
+	Target::onHit(contact);
+}
 
 // Constructors
 Asteroid::Asteroid(const Vec2& pos, const float& scale, const Color3B& color) : Asteroid(pos, std::make_unique<PhysMovement>(), scale, color) {}

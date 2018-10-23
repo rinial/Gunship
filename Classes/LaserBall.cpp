@@ -27,6 +27,28 @@ void LaserBall::setActive(const bool active)
 	Projectile::setActive(active);
 }
 
+// Update particle position
+void LaserBall::setPosition(const cocos2d::Vec2& pos)
+{
+	Projectile::setPosition(pos);
+	
+	// Update tail position
+	if(tail_) tail_->setSourcePosition(pos);
+}
+
+// Create tail
+void LaserBall::addToScene(cocos2d::Scene* scene, const int zLevel)
+{
+	Projectile::addToScene(scene, zLevel);
+
+	if (sceneNode_) {
+		// Create particle tail
+		tail_ = ParticleSystemQuad::create(LASER_BALL_TRAIL_PARTICLES);
+		tail_->setSourcePosition(getPosition());
+		sceneNode_->addChild(tail_, zLevel);
+	}
+}
+
 // Constructors
 LaserBall::LaserBall(const Vec2& pos, const Vec2& speed) : LaserBall(pos, std::make_unique<PhysMovement>(speed)) {}
 LaserBall::LaserBall(const Vec2& pos, std::unique_ptr<PhysMovement> movement) : Projectile(pos, LASER_BALL_MASS, LASER_BALL_BOUNCINESS)
@@ -35,11 +57,6 @@ LaserBall::LaserBall(const Vec2& pos, std::unique_ptr<PhysMovement> movement) : 
 	laserBall_->initWithFile(LASER_BALL_SPRITE);
 	laserBall_->setPosition(Vec2::ZERO);
 	rootNode_->addChild(laserBall_);
-	
-	// Create particle tail
-	tail_ = ParticleSystemQuad::create(LASER_BALL_TRAIL_PARTICLES);
-	tail_->setPosition(Vec2::ZERO);
-	rootNode_->addChild(tail_, -1);
 
 	addCollider(std::make_unique<PhysCircleCollider>(laserBall_->getContentSize().width / 2, LASER_BALL_BITMASKS));
 	setMovement(std::move(movement));
@@ -52,6 +69,14 @@ void LaserBall::onHit(const PhysContact& contact)
 {
 	// Play sound
 	SimpleAudioEngine::getInstance()->playEffect(LASER_BOUNCE_SOUND_EFFECT);
+
+	if (sceneNode_) {
+		// Create particle
+		auto sparks = ParticleSystemQuad::create(LASER_BALL_BOUNCED_PARTICLES);
+		sparks->setPosition(getPosition() + contact.getDirectionFrom(this) * laserBall_->getContentSize().width / 2);
+		sparks->setStartColor(tail_->getStartColor());
+		sceneNode_->addChild(sparks, rootNode_->getLocalZOrder());
+	}
 
 	Projectile::onHit(contact);
 }

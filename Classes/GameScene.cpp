@@ -43,6 +43,11 @@ bool GameScene::init()
 	backSprite->setPosition(CENTER);
 	this->addChild(backSprite, Z_LEVEL_BACKGROUND);
 
+	// Galaxy particles
+	auto galaxy = ParticleSystemQuad::create(STARS_PARTICLES);
+	galaxy->setPosition(CENTER);
+	this->addChild(galaxy, Z_LEVEL_STARS);
+
 	// Set label for targets (score) 
 	scoreLabel_ = Label::createWithTTF(__String::createWithFormat("Score: %d / %d", 0, maxScore_)->getCString(), MAIN_FONT, GAME_UI_FONT_SIZE);
 	const auto scoreLeftOffset = 0.04 * V_SIZE.width;
@@ -69,30 +74,22 @@ bool GameScene::init()
 	gameTimeLabel_->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_UI_SHADOW_SIZE);
 	this->addChild(gameTimeLabel_, Z_LEVEL_UI);
 
-	//// Set labels for controls
-	//// Menu
-	//auto menuLabel = Label::createWithTTF("[ ESC ] Menu", MAIN_FONT, GAME_UI_FONT_SIZE);
-	//menuLabel->setPosition(ORIGIN + menuLabel->getContentSize() / 2 + Vec2(scoreLeftOffset, scoreTopOffset));
-	//menuLabel->setColor(GAME_UI_COLOR);
-	//menuLabel->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_UI_SHADOW_SIZE);
-	//this->addChild(menuLabel, Z_LEVEL_UI);
-	//// Retry
-	//auto retryLabel = Label::createWithTTF("[ R ] Retry", MAIN_FONT, GAME_UI_FONT_SIZE);
-	//retryLabel->setPosition(
-	//	ORIGIN.x + V_SIZE.width - retryLabel->getContentSize().width / 2 - timeRightOffset,
-	//	ORIGIN.y + retryLabel->getContentSize().height / 2 + timeTopOffset);
-	//retryLabel->setColor(GAME_UI_COLOR);
-	//retryLabel->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_UI_SHADOW_SIZE);
-	//this->addChild(retryLabel, Z_LEVEL_UI);
-
-	// Create galaxy particles
-	auto galaxy = ParticleSystemQuad::create(STARS_PARTICLES); 
-	galaxy->setPosition(CENTER);
-	this->addChild(galaxy, Z_LEVEL_STARS);
+	// Menu (buttons)
+	auto menuButton = MenuItemImage::create(MENU_BUTTON_NORMAL_SPRITE, MENU_BUTTON_PRESSED_SPRITE, CC_CALLBACK_1(GameScene::menuCallback, this));
+	menuButton->setScale(GAME_UI_SCALE);
+	menuButton->setPosition(ORIGIN + menuButton->getContentSize() * GAME_UI_SCALE / 2 + Vec2(scoreLeftOffset, scoreTopOffset));
+	auto retryButton = MenuItemImage::create(RETRY_BUTTON_NORMAL_SPRITE, RETRY_BUTTON_PRESSED_SPRITE, CC_CALLBACK_1(GameScene::retryCallback, this));
+	retryButton->setScale(GAME_UI_SCALE);
+	retryButton->setPosition(
+		ORIGIN.x + V_SIZE.width - retryButton->getContentSize().width * GAME_UI_SCALE / 2 - timeRightOffset,
+		ORIGIN.y + retryButton->getContentSize().height * GAME_UI_SCALE / 2 + timeTopOffset);
+	auto menu = Menu::create(menuButton, retryButton, nullptr);
+	menu->setPosition(Vec2::ZERO);
+	this->addChild(menu, Z_LEVEL_UI);
 
 	// Create cursor particles
 	cursor_ = ParticleSystemQuad::create(CURSOR_PARTICLES);
-	cursor_->setPosition(CENTER);
+	cursor_->setPosition(-CENTER); // somewhere outside
 	this->addChild(cursor_, Z_LEVEL_UI);
 	// Hide default cursor
 	Director::getInstance()->getOpenGLView()->setCursorVisible(false);
@@ -224,7 +221,7 @@ void GameScene::continueToGameOver(float dT)
 }
 
 // Go to main menu scene
-void GameScene::goToMenu()
+void GameScene::menuCallback(Ref* sender)
 {
 	beforeLeavingScene(); // Stops schedules
 
@@ -235,7 +232,7 @@ void GameScene::goToMenu()
 }
 
 // Go to game scene (retry)
-void GameScene::retry()
+void GameScene::retryCallback(Ref* sender)
 {
 	beforeLeavingScene(); // Stops schedules
 
@@ -265,10 +262,10 @@ void GameScene::onKeyPressed(const EventKeyboard::KeyCode keyCode, Event* event)
 	switch(keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_ESCAPE:
-		goToMenu();
+		menuCallback();
 		break;
 	case EventKeyboard::KeyCode::KEY_R:
-		retry();
+		retryCallback();
 		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
 	case EventKeyboard::KeyCode::KEY_W:

@@ -7,8 +7,10 @@
 // Represents an asteroid that can be destroyed
 class Asteroid : public Target
 {
-
 public:
+	// Called on hits
+	virtual void onHit(const PhysContact& contact) override;
+
 	// Constructors
 	explicit Asteroid(const cocos2d::Vec2& pos, const float& scale = 1, const cocos2d::Color3B& color = cocos2d::Color3B::WHITE);
 	Asteroid(const cocos2d::Vec2& pos, std::unique_ptr<PhysMovement> movement, const float& scale = 1, const cocos2d::Color3B& color = cocos2d::Color3B::WHITE);

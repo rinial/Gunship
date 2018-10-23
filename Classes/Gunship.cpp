@@ -72,6 +72,22 @@ void Gunship::shoot()
 	laserBall->setColor(!isPowerShot ? LASER_BALL_NORMAL_COLOR : LASER_BALL_POWERFUL_COLOR);
 }
 
+// Called on hits
+void Gunship::onHit(const PhysContact& contact)
+{
+	// Play sound
+	SimpleAudioEngine::getInstance()->playEffect(GUNSHIP_BOUNCE_SOUND_EFFECT);
+
+	if (sceneNode_) {
+		// Create particle
+		auto sparks = ParticleSystemQuad::create(GUNSHIP_BOUNCED_PARTICLES);
+		sparks->setPosition(getPosition() + contact.getDirectionFrom(this) * hull_->getContentSize().width / 2);
+		sceneNode_->addChild(sparks, rootNode_->getLocalZOrder());
+	}
+
+	GameObject::onHit(contact);
+}
+
 // Spawn projectiles
 void Gunship::step(const float dT)
 {

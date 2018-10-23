@@ -34,7 +34,12 @@ bool GameOverScene::init()
 	// Background image
 	auto backSprite = Sprite::create(BACKGROUND_SPRITE);
 	backSprite->setPosition(CENTER);
-	this->addChild(backSprite);
+	this->addChild(backSprite, Z_LEVEL_BACKGROUND);
+
+	// Galaxy particles
+	auto galaxy = ParticleSystemQuad::create(STARS_PARTICLES);
+	galaxy->setPosition(CENTER);
+	this->addChild(galaxy, Z_LEVEL_STARS);
 
 	const auto topOffset = V_SIZE.height / 5;
 
@@ -42,7 +47,7 @@ bool GameOverScene::init()
 	auto topSprite = Sprite::create(isWin_ ? WIN_SPRITE : LOSS_SPRITE);
 	topSprite->setPosition(CENTER_X,
 		ORIGIN.y + V_SIZE.height - topOffset - topSprite->getContentSize().height / 2);
-	this->addChild(topSprite);
+	this->addChild(topSprite, Z_LEVEL_UI);
 
 	const auto topToNumbers = V_SIZE.height / 12;
 
@@ -55,7 +60,7 @@ bool GameOverScene::init()
 		ORIGIN.y + V_SIZE.height - topOffset - topSprite->getContentSize().height - topToNumbers - numberTextLabel->getContentSize().height / 2);
 	numberTextLabel->setColor(GAME_UI_COLOR);
 	numberTextLabel->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_OVER_NUMBER_TEXT_SHADOW_SIZE);
-	this->addChild(numberTextLabel);
+	this->addChild(numberTextLabel, Z_LEVEL_UI);
 
 	// Set label for 'best'
 	auto hNumberTextLabel = Label::createWithTTF("BEST", MAIN_FONT, GAME_OVER_NUMBER_TEXT_FONT_SIZE);
@@ -64,7 +69,7 @@ bool GameOverScene::init()
 		ORIGIN.y + V_SIZE.height - topOffset - topSprite->getContentSize().height - topToNumbers - numberTextLabel->getContentSize().height / 2);
 	hNumberTextLabel->setColor(GAME_UI_COLOR);
 	hNumberTextLabel->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_OVER_NUMBER_TEXT_SHADOW_SIZE);
-	this->addChild(hNumberTextLabel);
+	this->addChild(hNumberTextLabel, Z_LEVEL_UI);
 
 	const auto betweenScores = V_SIZE.height / 40;
 
@@ -76,7 +81,7 @@ bool GameOverScene::init()
 		ORIGIN.y + V_SIZE.height - topOffset - topSprite->getContentSize().height - topToNumbers - numberTextLabel->getContentSize().height - betweenScores - numberLabel_->getContentSize().height / 2);
 	numberLabel_->setColor(GAME_UI_COLOR);
 	numberLabel_->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_OVER_NUMBER_SHADOW_SIZE);
-	this->addChild(numberLabel_);
+	this->addChild(numberLabel_, Z_LEVEL_UI);
 
 	// Set label for best number 
 	UserDefault* def = UserDefault::getInstance();
@@ -98,7 +103,7 @@ bool GameOverScene::init()
 		ORIGIN.y + V_SIZE.height - topOffset - topSprite->getContentSize().height - topToNumbers - numberTextLabel->getContentSize().height - betweenScores - bNumberLabel_->getContentSize().height / 2);
 	bNumberLabel_->setColor(GAME_UI_COLOR);
 	bNumberLabel_->enableShadow(Color4B(GAME_UI_SHADOW_COLOR), Size(1, -1) * GAME_OVER_NUMBER_SHADOW_SIZE);
-	this->addChild(bNumberLabel_);
+	this->addChild(bNumberLabel_, Z_LEVEL_UI);
 
 	// Schedule incrementing shown score
 	if ((isWin_ && gameTime < maxGameTime) || (!isWin_ && score > 0))
@@ -120,7 +125,7 @@ bool GameOverScene::init()
 	}
 	auto menu = Menu::create(menuItems[0], menuItems[1], menuItems[2], nullptr); // Make sure to add/remove items here if you add/remove them elsewhere
 	menu->setPosition(Vec2::ZERO);
-	this->addChild(menu);
+	this->addChild(menu, Z_LEVEL_UI);
 
 	return true;
 }
