@@ -96,7 +96,8 @@ void LaserBall::step(const float dT)
 // Called on hitting (overlapping) a Target
 void LaserBall::onHitTarget(Target* target, const Vec2& toTarget)
 {
-	if (!target)
+	// This prevents projectile from doing anything if target was already destroyed (set inactive) by other projectile
+	if (!target || !target->isAlive() || !target->isActive())
 		return;
 
 	// Play sound

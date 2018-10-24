@@ -36,6 +36,9 @@ public:
 	// Reset game object to initial state
 	virtual void reset() { lifeTime_ = 0; }
 
+	// False if destroy() was called
+	bool isAlive() const { return isAlive_; }
+
 	// Destroy this object, calls onDestroy first for children to add functionality
 	void destroy();
 protected:
@@ -44,7 +47,7 @@ protected:
 public:
 	// Constructor
 	explicit GameObject(const cocos2d::Vec2& pos = cocos2d::Vec2::ZERO, const float& mass = 1, const float& bounciness = 1);
-	// Important for cleaning memory using base class pointer
+	// Destructor
 	virtual ~GameObject();
 
 protected:
@@ -59,6 +62,11 @@ private:
 
 	// Life time of this object
 	float lifeTime_ = 0;
+
+	// False if destroy() was called
+	// Usually needed only when two GameObjects are interacting
+	// No need to check if object is alive in every method
+	bool isAlive_ = true;
 };
 
 #endif // __GAME_OBJECT_H__

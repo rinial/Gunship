@@ -48,6 +48,10 @@ Asteroid::~Asteroid() = default;
 // Called on being hit (overlaped) by a Projectile
 void Asteroid::onBeingHit(Projectile* projectile, const Vec2& toProjectile)
 {
+	// This prevents one projectile from destroying two targets if it's supposed to destroy (or set inactive) itself
+	if (!projectile || !projectile->isAlive() || !projectile->isActive())
+		return;
+
 	if (healthPoints_ <= 1) {
 		if (sceneNode_) {
 			// Create particle

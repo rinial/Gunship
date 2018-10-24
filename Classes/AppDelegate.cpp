@@ -50,7 +50,7 @@ bool AppDelegate::applicationDidFinishLaunching()
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::NO_BORDER);
 
 	// Set fullscreen
-	// TODO dynamic_cast<GLViewImpl*>(glview)->setFullscreen();
+	dynamic_cast<GLViewImpl*>(glview)->setFullscreen();
 
     register_all_packages();
 

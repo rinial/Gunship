@@ -24,6 +24,10 @@ void Projectile::onOverlap(const PhysContact& contact)
 // Called on hitting (overlapping) a Target
 void Projectile::onHitTarget(Target* target, const Vec2& toTarget)
 {
+	// This prevents projectile from doing anything if target was already destroyed (set inactive) by other projectile
+	if (!target || !target->isAlive() || !target->isActive())
+		return;
+
 	target->onBeingHit(this, -toTarget);
 
 	// Projectile is destroyed

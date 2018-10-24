@@ -61,12 +61,14 @@ void GameObject::addToScene(Scene* scene, const int zLevel)
 // Destroy this object
 void GameObject::destroy()
 {
+	if (!isAlive_) return;
+	isAlive_ = false;
+
 	// Send event
 	for (auto listener : listeners_)
 		listener->onGameObjectBeginDestroy(this);
 
 	onDestroy();
-	rootNode_->removeFromParentAndCleanup(true);
 	getWorld()->removeBody(this);
 }
 
@@ -76,5 +78,9 @@ GameObject::GameObject(const Vec2& pos, const float& mass, const float& bouncine
 	rootNode_ = Node::create();
 	rootNode_->setPosition(pos);
 }
-// Important for cleaning memory using base class pointe
-GameObject::~GameObject() = default;
+// Destructor
+GameObject::~GameObject() {
+	// We only clean rootNode_ when GameObject is actually destroyed
+	// It would cause bugs if done in destroy()
+	rootNode_->removeFromParentAndCleanup(true);
+}
