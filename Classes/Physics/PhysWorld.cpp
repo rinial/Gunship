@@ -71,31 +71,32 @@ void PhysWorld::step(const float dT)
 			body->step(dT);
 	}
 
+	// We store forEvaluation for each partition now
+	std::vector<std::list<PhysBody*>> forEvaluationInPartitions(partitions_.size());
+
 	// Update partitions
 	// Partitions are needed for faster computations
 	for (auto& body : forEvaluation_) {
 		for (unsigned int i = 0; i < partitions_.size(); ++i) {
-			// TODO improve partition check by first checking partitions of higher size
-			if (PhysContactEvaluator::inRect(body, getPartitionsOrigin(i), partitionSize_))
+			if (PhysContactEvaluator::inRect(body, getPartitionsOrigin(i), partitionSize_)) {
 				partitions_[i].insert(body);
+				forEvaluationInPartitions[i].push_back(body);
+			}
 			else
 				partitions_[i].erase(body);
 		}
 	}
+	forEvaluation_.clear();
 
 	// Now start testing for collisions
 	CONTACTS_SET newContacts;
-	for (auto& partition : partitions_)
+	for (unsigned int i = 0; i < partitions_.size(); ++i)
 	{
 		std::unordered_set<PhysBody*> testedBodies;
-		for (auto& bodyA : partition)
+		for (auto& bodyA : forEvaluationInPartitions[i])
 		{
-			// We only check bodies that are for evaluation
-			if (forEvaluation_.find(bodyA) == forEvaluation_.end()) // if !forEvaluation.contains(bodyA)
-				continue;
-
 			testedBodies.insert(bodyA);
-			for (auto& bodyB : partition) {
+			for (auto& bodyB : partitions_[i]) {
 				if (testedBodies.find(bodyB) != testedBodies.end()) // if testedBodies.contains(bodyB)
 					continue;
 
@@ -108,9 +109,6 @@ void PhysWorld::step(const float dT)
 			}
 		}
 	}
-
-	// We have evaluated all that we had for evaluation
-	forEvaluation_.clear();
 
 	// We now have all the contacts and need to find, which ones are new
 	// First we remove old contacts

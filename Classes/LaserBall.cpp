@@ -96,6 +96,9 @@ void LaserBall::step(const float dT)
 // Called on hitting (overlapping) a Target
 void LaserBall::onHitTarget(Target* target, const Vec2& toTarget)
 {
+	if (!target)
+		return;
+
 	// Play sound
 	SimpleAudioEngine::getInstance()->playEffect(LASER_HIT_SOUND_EFFECT);
 
@@ -109,5 +112,5 @@ void LaserBall::onHitTarget(Target* target, const Vec2& toTarget)
 
 	target->onBeingHit(this, -toTarget);
 	setActive(false); // event will be send and gunship will handle it to pool the laserball
-	//destroy();
+	// destroy();
 }
