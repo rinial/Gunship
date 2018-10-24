@@ -6,17 +6,23 @@ Made with Cocos2d-x.
 
 ## Where to play
 
-You can download an archive with an executable of the game for Windows from Google Drive: [link](TODO).
+You can download an archive with an executable of the game for Windows from Google Drive: [link](https://drive.google.com/open?id=1Z2iZ_A0Vhgxrt1c80AYj8LETPRKyLGCR).
 
 ## How to play
 
-TODO
+You control a gunship.
 
-**The goal:** TODO.
+* Use mouse to aim. 
+* Mouse click to shoot.
+* Arrows/WASD to move.
+
+**The goal:** destroy all asteroids in time!
 
 ## Screenshots
 
-TODO
+<img src="Screenshots/Gameplay1.png" alt="Gameplay 1" width="750"/>
+<img src="Screenshots/Gameplay2.png" alt="Gameplay 2" width="750"/>
+<img src="Screenshots/GameOver.png" alt="Game Over" width="750"/>
 
 ## Influencers
 
