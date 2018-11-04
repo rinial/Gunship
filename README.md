@@ -6,7 +6,7 @@ Made with Cocos2d-x.
 
 ## Where to play
 
-You can download an archive with an executable of the game for Windows from Google Drive: [link](https://drive.google.com/open?id=1Z2iZ_A0Vhgxrt1c80AYj8LETPRKyLGCR).
+You can download an archive with an executable of the game for Windows from Google Drive: [link](https://drive.google.com/open?id=1-tQVbULpWIcY4Sdu8Un8RtapW8gn7kFt).
 
 ## How to play
 
