@@ -1,8 +1,8 @@
 # Gunship
 
-**Gunship** is a game about a... gunship destroying asteroids in space.
+**Gunship** is a game about a... gunship destroying asteroids in space. 
 
-Made with Cocos2d-x.
+Made with Cocos2d-x. Custom physics engine was implemented.
 
 ## Where to play
 
